@@ -289,6 +289,44 @@ main.werkzeuge-main {
   text-decoration: underline;
 }
 
+/* Nav-Container fasst Liste + Support-Link in einer Zeile.
+   Das DS liefert <nav> ohne Flex; wir setzen ihn hier lokal,
+   damit der mailto-Link rechtsbuendig neben der Liste sitzt. */
+.gat-header__inner > nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+/* Support-Link (mailto Betreuer). Desktop: Icon + Text; Mobile (<48rem): nur Icon.
+   DS v2.2 stellt keine Klassen .gat-header__support* bereit — sie sind
+   lokal, halten sich aber an die DS-Tokens (--gat-color-dunkelgruen,
+   --gat-web-text-mute). */
+.gat-header__support {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gat-web-text-mute, #555);
+  text-decoration: none;
+  transition: color 120ms ease;
+}
+.gat-header__support:hover,
+.gat-header__support:focus-visible {
+  color: var(--gat-color-dunkelgruen, #005538);
+  outline: none;
+}
+.gat-header__support:focus-visible {
+  text-decoration: underline;
+}
+.gat-header__support-icon { flex: none; }
+
+@media (max-width: 48rem) {
+  .gat-header__support-label { display: none; }
+}
+
 @media (max-width: 600px) {
   main.werkzeuge-main { padding: 1.25rem 0.75rem 2.5rem; }
   .werkzeug-meta-tabelle { grid-template-columns: 1fr; gap: 0.15rem 0; }
