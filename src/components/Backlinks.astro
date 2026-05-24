@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import WerkzeugCard from './WerkzeugCard.astro';
+
+interface Props {
+  currentSlug: string;
+}
+
+const { currentSlug } = Astro.props as Props;
+const all = await getCollection('werkzeuge');
+
+const linking = all
+  .filter((e) => e.data.related?.includes(currentSlug) && e.data.slug !== currentSlug)
+  .sort((a, b) => a.data.title.localeCompare(b.data.title, 'de'));
+---
+{linking.length > 0 && (
+  <section class="backlinks">
+    <h2>Verlinkt von</h2>
+    <div class="werkzeug-liste">
+      {linking.map((e) => <WerkzeugCard entry={e} />)}
+    </div>
+  </section>
+)}

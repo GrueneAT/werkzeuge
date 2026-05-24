@@ -1,0 +1,44 @@
+---
+// Leitet aus hosted_by + license + own_tool ein Datenschutz-Label ab.
+// Pragmatisch: regelbasiert, kein eigener Frontmatter-Key noetig.
+
+interface Props {
+  hosted_by: string;
+  license: string;
+}
+
+const { hosted_by, license } = Astro.props as Props;
+const h = hosted_by.toLowerCase();
+
+let label = '';
+let cls = '';
+
+if (h.includes('github pages') || h.includes('grueneat')) {
+  // Eigene Tools auf GitHub Pages = on-device-Verarbeitung blank-Static
+  label = 'On-Device';
+  cls = 'ds-badge--on-device';
+} else if (h.includes('self-host') || h.includes('netzbegruenung')) {
+  label = 'Self-Host / Community';
+  cls = 'ds-badge--self-host';
+} else if (h.includes('.gv.at') || h.includes('republik')) {
+  label = 'SaaS-AT';
+  cls = 'ds-badge--saas-at';
+} else if (h.includes('saas:de') || h.includes('(de)') || h.endsWith('.de')) {
+  label = 'SaaS-DE';
+  cls = 'ds-badge--saas-de';
+} else if (h.includes('saas:eu') || h.includes('(eu)') || h.includes('.eu')) {
+  label = 'SaaS-EU';
+  cls = 'ds-badge--saas-eu';
+} else if (h.includes('saas:us') || h.includes('(us)') || h.endsWith('.com')) {
+  label = 'SaaS-US';
+  cls = 'ds-badge--saas-us';
+} else {
+  label = 'SaaS';
+  cls = 'ds-badge--saas-eu';
+}
+
+const istKostenlos = !license.toLowerCase().includes('proprietary');
+---
+<span class={`ds-badge ${cls}`} title={`Hosted by: ${hosted_by}`}>{label}</span>
+{istKostenlos && <span class="ds-badge ds-badge--kostenlos">Kostenlos</span>}
+{license.toLowerCase() === 'proprietary' && <span class="ds-badge ds-badge--proprietary">Proprietaer</span>}

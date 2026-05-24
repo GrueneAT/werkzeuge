@@ -1,0 +1,55 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import WerkzeugCard from '../components/WerkzeugCard.astro';
+import KategorienGrid from '../components/KategorienGrid.astro';
+
+const all = await getCollection('werkzeuge');
+const eigene = all.filter((e) => e.data.own_tool).sort((a, b) => a.data.title.localeCompare(b.data.title, 'de'));
+const dritt  = all.filter((e) => !e.data.own_tool).sort((a, b) => a.data.title.localeCompare(b.data.title, 'de'));
+
+// Kategorie-Counts berechnen
+const counts: Record<string, number> = {};
+for (const e of all) {
+  for (const c of e.data.categories) {
+    counts[c] = (counts[c] ?? 0) + 1;
+  }
+}
+---
+<Base title="Werkzeuge" description="Werkzeug-Verzeichnis fuer Gruene-Gemeindegruppen — eigene Tools und kuratierte Dritt-Tools fuer kommunalpolitische Arbeit.">
+  <section class="werkzeuge-hero">
+    <h1>Werkzeuge fuer Gemeindegruppen</h1>
+    <p>
+      Eine kuratierte Sammlung digitaler Werkzeuge fuer Gruene-Gemeindegruppen
+      und kommunalpolitische Arbeit. Eigene Tools und Empfehlungen fuer
+      Kommunikation, Beteiligung, Veranstaltungen, Branding und Recherche.
+    </p>
+  </section>
+
+  <section data-pagefind-ignore>
+    <h2 class="gat-headline" style="margin-top:2rem;">Eigene Werkzeuge</h2>
+    <div class="werkzeug-liste">
+      {eigene.map((e) => <WerkzeugCard entry={e} />)}
+    </div>
+  </section>
+
+  <section id="kategorien" data-pagefind-ignore>
+    <h2 class="gat-headline" style="margin-top:2rem;">Nach Kategorie</h2>
+    <KategorienGrid counts={counts} />
+  </section>
+
+  {dritt.length > 0 && (
+    <section data-pagefind-ignore>
+      <h2 class="gat-headline" style="margin-top:2rem;">Kuratierte Dritt-Werkzeuge</h2>
+      <div class="werkzeug-liste">
+        {dritt.map((e) => <WerkzeugCard entry={e} />)}
+      </div>
+    </section>
+  )}
+
+  <p style="margin-top:2rem;">
+    <a class="gat-btn gat-btn--secondary" href={`${import.meta.env.BASE_URL}alle/`}>
+      Alle {all.length} Werkzeuge anzeigen &raquo;
+    </a>
+  </p>
+</Base>

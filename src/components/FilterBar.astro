@@ -1,0 +1,65 @@
+---
+import { KATEGORIEN } from '../lib/kategorien';
+
+interface Props {
+  /** nur Kategorien mit mindestens 1 Werkzeug zeigen */
+  counts: Record<string, number>;
+}
+
+const { counts } = Astro.props as Props;
+const aktive = Object.entries(KATEGORIEN).filter(([id]) => (counts[id] ?? 0) > 0);
+---
+<div class="filter-bar" data-filter-bar>
+  <span class="filter-bar__label">Typ:</span>
+  <div class="filter-bar__group" data-filter-group="own_tool">
+    <button class="filter-chip" type="button" data-value="all" aria-pressed="true">Alle</button>
+    <button class="filter-chip" type="button" data-value="own" aria-pressed="false">Nur eigene</button>
+    <button class="filter-chip" type="button" data-value="third" aria-pressed="false">Nur Dritt</button>
+  </div>
+
+  <span class="filter-bar__label" style="margin-left:1rem;">Kategorie:</span>
+  <div class="filter-bar__group" data-filter-group="category">
+    <button class="filter-chip" type="button" data-value="" aria-pressed="true">Alle</button>
+    {aktive.map(([id, label]) => (
+      <button class="filter-chip" type="button" data-value={id} aria-pressed="false">{label}</button>
+    ))}
+  </div>
+</div>
+
+<script>
+  (function () {
+    const bar = document.querySelector('[data-filter-bar]');
+    if (!bar) return;
+    const state = { own_tool: 'all', category: '' };
+
+    function applyFilters() {
+      const cards = document.querySelectorAll('.werkzeug-card[data-own-tool]');
+      cards.forEach((card) => {
+        const el = card as HTMLElement;
+        const isOwn = el.dataset.ownTool === 'true';
+        const cats = (el.dataset.categories || '').split(',').filter(Boolean);
+
+        let show = true;
+        if (state.own_tool === 'own' && !isOwn) show = false;
+        if (state.own_tool === 'third' && isOwn) show = false;
+        if (state.category && !cats.includes(state.category)) show = false;
+
+        el.style.display = show ? '' : 'none';
+      });
+    }
+
+    bar.querySelectorAll('[data-filter-group]').forEach((group) => {
+      const groupName = (group as HTMLElement).dataset.filterGroup as 'own_tool' | 'category';
+      group.querySelectorAll('button.filter-chip').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          group.querySelectorAll('button.filter-chip').forEach((b) => {
+            b.setAttribute('aria-pressed', 'false');
+          });
+          btn.setAttribute('aria-pressed', 'true');
+          state[groupName] = (btn as HTMLElement).dataset.value || '';
+          applyFilters();
+        });
+      });
+    });
+  })();
+</script>

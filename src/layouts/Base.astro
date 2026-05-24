@@ -1,0 +1,53 @@
+---
+import '../styles/app.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props as Props;
+const BASE = import.meta.env.BASE_URL;
+const url = (p: string) => BASE + p.replace(/^\//, '');
+const fullTitle = title === 'Werkzeuge' ? 'Werkzeuge — Gruene AT' : `${title} — Werkzeuge`;
+const desc = description ?? 'Werkzeug-Verzeichnis fuer Gruene-Gemeindegruppen und kommunalpolitische Arbeit.';
+---
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#005538" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={desc} />
+    <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
+    <link rel="stylesheet" href="https://grueneat.github.io/design-system/design-system.css" />
+  </head>
+  <body>
+    <a class="gat-skiplink" href="#main">Zum Hauptinhalt springen</a>
+    <header class="gat-header gat-header--kompakt">
+      <div class="gat-header__inner">
+        <a class="gat-header__brand" href={BASE}>
+          <img class="gat-header__logo"
+               src="https://grueneat.github.io/design-system/assets/gruene-logo.svg"
+               alt="Die Grünen" />
+          <span class="gat-header__wordmark">Werkzeuge</span>
+        </a>
+        <nav aria-label="Hauptnavigation">
+          <ul class="gat-header__nav-list">
+            <li><a href={url('/alle/')}>Alle Werkzeuge</a></li>
+            <li><a href={url('/#kategorien')}>Kategorien</a></li>
+            <li><a href={url('/suche/')}>Suche</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main" tabindex="-1" class="werkzeuge-main">
+      <slot />
+    </main>
+    <footer class="werkzeuge-footer">
+      Werkzeuge fuer Gemeindegruppen ·
+      Vorschlag? <a href="https://github.com/GrueneAT/werkzeuge/issues/new?title=Werkzeug-Vorschlag%3A%20">GitHub-Issue oeffnen</a>
+    </footer>
+  </body>
+</html>

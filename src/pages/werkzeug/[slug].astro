@@ -1,0 +1,102 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Backlinks from '../../components/Backlinks.astro';
+import WerkzeugCard from '../../components/WerkzeugCard.astro';
+import DatenschutzBadge from '../../components/DatenschutzBadge.astro';
+import { kategorieLabel } from '../../lib/kategorien';
+
+export async function getStaticPaths() {
+  const all = await getCollection('werkzeuge');
+  return all.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+
+// related (vorwaerts) als Cards laden
+const all = await getCollection('werkzeuge');
+const related = (d.related ?? [])
+  .map((slug) => all.find((e) => e.data.slug === slug))
+  .filter((e): e is NonNullable<typeof e> => Boolean(e));
+
+const lastVerified = d.last_verified instanceof Date
+  ? d.last_verified.toISOString().slice(0, 10)
+  : String(d.last_verified);
+---
+<Base title={d.title} description={`${d.title} — Werkzeug aus dem Gruene-AT-Verzeichnis.`}>
+  <article data-pagefind-body data-pagefind-meta={`title:${d.title}`}>
+    <header class="werkzeug-detail__head">
+      <h1 class="werkzeug-detail__title">{d.title}</h1>
+      <div>
+        {d.own_tool
+          ? <span class="gat-tag gat-tag--ok">Eigenes Gruene-Tool</span>
+          : <span class="gat-tag gat-tag--neutral">Kuratiertes Dritt-Werkzeug</span>}
+        {d.status !== 'live' && <span class="gat-tag gat-tag--warn">{d.status}</span>}
+        <DatenschutzBadge hosted_by={d.hosted_by} license={d.license} />
+      </div>
+      <div class="werkzeug-detail__actions">
+        <a class="gat-btn gat-btn--primary" href={d.url} rel="noopener" target="_blank">
+          Werkzeug oeffnen &nbsp;&rarr;
+        </a>
+        {d.source && (
+          <a class="gat-btn gat-btn--secondary" href={d.source} rel="noopener" target="_blank">
+            Quellcode
+          </a>
+        )}
+      </div>
+    </header>
+
+    <dl class="werkzeug-meta-tabelle" data-pagefind-ignore>
+      <dt>Kategorien</dt>
+      <dd>{d.categories.map((c, i) => (
+        <>
+          <a href={`${import.meta.env.BASE_URL}kategorie/${c}/`}>{kategorieLabel(c)}</a>{i < d.categories.length - 1 ? ', ' : ''}
+        </>
+      ))}</dd>
+
+      <dt>Zielgruppe</dt>
+      <dd>{d.audience.join(', ')}</dd>
+
+      <dt>Tags</dt>
+      <dd>{d.tags.join(', ')}</dd>
+
+      <dt>Wartung</dt>
+      <dd>{d.maintained_by}</dd>
+
+      <dt>Hosting</dt>
+      <dd>{d.hosted_by}</dd>
+
+      <dt>Lizenz</dt>
+      <dd>{d.license}</dd>
+
+      <dt>Sprache</dt>
+      <dd>{d.language}</dd>
+
+      <dt>Status</dt>
+      <dd>{d.status}</dd>
+
+      <dt>Geprueft</dt>
+      <dd>{lastVerified}</dd>
+    </dl>
+
+    <div class="werkzeug-body">
+      <Content />
+    </div>
+
+    {related.length > 0 && (
+      <section class="backlinks" data-pagefind-ignore>
+        <h2>Verwandte Werkzeuge</h2>
+        <div class="werkzeug-liste">
+          {related.map((e) => <WerkzeugCard entry={e} />)}
+        </div>
+      </section>
+    )}
+
+    <Backlinks currentSlug={d.slug} />
+  </article>
+</Base>

@@ -1,0 +1,25 @@
+---
+import { KATEGORIEN } from '../lib/kategorien';
+
+interface Props {
+  counts: Record<string, number>;
+}
+
+const { counts } = Astro.props as Props;
+const BASE = import.meta.env.BASE_URL;
+
+// nur Kategorien mit mindestens einem Werkzeug
+const aktive = Object.entries(KATEGORIEN)
+  .filter(([id]) => (counts[id] ?? 0) > 0)
+  .sort((a, b) => (counts[b[0]] ?? 0) - (counts[a[0]] ?? 0));
+---
+<div class="kategorien-grid">
+  {aktive.map(([id, label]) => (
+    <a class="kategorie-karte" href={`${BASE}kategorie/${id}/`}>
+      <span class="kategorie-karte__label">{label}</span>
+      <span class="kategorie-karte__count">
+        {counts[id]} {counts[id] === 1 ? 'Werkzeug' : 'Werkzeuge'}
+      </span>
+    </a>
+  ))}
+</div>

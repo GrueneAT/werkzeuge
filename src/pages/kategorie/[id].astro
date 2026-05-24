@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import WerkzeugCard from '../../components/WerkzeugCard.astro';
+import { KATEGORIEN, kategorieLabel } from '../../lib/kategorien';
+
+export async function getStaticPaths() {
+  const all = await getCollection('werkzeuge');
+  const ids = new Set<string>();
+  for (const e of all) for (const c of e.data.categories) ids.add(c);
+  return Array.from(ids).map((id) => ({ params: { id } }));
+}
+
+const { id } = Astro.params;
+const all = await getCollection('werkzeuge');
+const inCat = all
+  .filter((e) => e.data.categories.includes(id as string))
+  .sort((a, b) => a.data.title.localeCompare(b.data.title, 'de'));
+const label = kategorieLabel(id as string);
+---
+<Base title={label} description={`Werkzeuge in der Kategorie ${label}.`}>
+  <p style="margin-top:0;">
+    <a href={import.meta.env.BASE_URL}>&laquo; alle Werkzeuge</a>
+  </p>
+  <h1 class="gat-headline">Kategorie: {label}</h1>
+  <p>{inCat.length} {inCat.length === 1 ? 'Werkzeug' : 'Werkzeuge'} in dieser Kategorie.</p>
+
+  <div class="werkzeug-liste">
+    {inCat.map((e) => <WerkzeugCard entry={e} />)}
+  </div>
+</Base>

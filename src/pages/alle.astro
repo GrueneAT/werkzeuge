@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import WerkzeugCard from '../components/WerkzeugCard.astro';
+import FilterBar from '../components/FilterBar.astro';
+
+const all = await getCollection('werkzeuge');
+const sorted = [...all].sort((a, b) => a.data.title.localeCompare(b.data.title, 'de'));
+
+const counts: Record<string, number> = {};
+for (const e of all) {
+  for (const c of e.data.categories) {
+    counts[c] = (counts[c] ?? 0) + 1;
+  }
+}
+---
+<Base title="Alle Werkzeuge" description="Vollstaendige Liste aller kuratierten Werkzeuge mit Filtern fuer Typ und Kategorie.">
+  <h1 class="gat-headline">Alle Werkzeuge</h1>
+  <p>{sorted.length} Werkzeuge insgesamt. Filtere nach Typ oder Kategorie.</p>
+
+  <FilterBar counts={counts} />
+
+  <div class="werkzeug-liste">
+    {sorted.map((e) => <WerkzeugCard entry={e} />)}
+  </div>
+</Base>

@@ -1,0 +1,296 @@
+/* Werkzeuge — minimaler Site-CSS-Override.
+   Der Loewenanteil kommt aus dem DS (grueneat.github.io/design-system/design-system.css).
+   Hier nur Layout-Wrapper und Komponenten-Klassen, die das DS nicht abdeckt. */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--gat-web-bg, #f7f5f0);
+  color: var(--gat-web-text, #1f1f1f);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+main.werkzeuge-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.werkzeuge-footer {
+  border-top: 1px solid var(--gat-web-border, #e4e0d8);
+  color: var(--gat-web-text-mute, #555);
+  padding: 2rem 1.25rem;
+  text-align: center;
+  font-size: 0.9em;
+}
+
+.werkzeuge-footer a {
+  color: var(--gat-color-dunkelgruen, #005538);
+}
+
+/* Hero auf der Landing */
+.werkzeuge-hero {
+  padding: 2.5rem 0 1.5rem;
+}
+.werkzeuge-hero h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.8rem, 3vw + 1rem, 2.8rem);
+  line-height: 1.15;
+  color: var(--gat-color-dunkelgruen, #005538);
+}
+.werkzeuge-hero p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--gat-web-text-mute, #555);
+  max-width: 60ch;
+}
+
+/* Werkzeug-Card */
+.werkzeug-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--gat-web-border, #e4e0d8);
+  border-radius: 8px;
+  background: #fff;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 120ms ease, transform 120ms ease;
+}
+.werkzeug-card:hover,
+.werkzeug-card:focus-visible {
+  border-color: var(--gat-color-dunkelgruen, #005538);
+  transform: translateY(-1px);
+  outline: none;
+}
+.werkzeug-card__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.werkzeug-card__title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--gat-color-dunkelgruen, #005538);
+}
+.werkzeug-card__desc {
+  margin: 0;
+  color: var(--gat-web-text-mute, #555);
+  font-size: 0.95rem;
+}
+.werkzeug-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+/* Werkzeug-Liste (alle/) */
+.werkzeug-liste {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  margin-top: 1.25rem;
+}
+
+/* Kategorien-Karten auf der Landing */
+.kategorien-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  margin: 1rem 0 2rem;
+}
+.kategorie-karte {
+  display: block;
+  padding: 1rem 1.1rem;
+  background: #fff;
+  border: 1px solid var(--gat-web-border, #e4e0d8);
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 120ms ease;
+}
+.kategorie-karte:hover,
+.kategorie-karte:focus-visible {
+  border-color: var(--gat-color-dunkelgruen, #005538);
+  outline: none;
+}
+.kategorie-karte__label {
+  display: block;
+  font-weight: 700;
+  color: var(--gat-color-dunkelgruen, #005538);
+  font-size: 1.05rem;
+}
+.kategorie-karte__count {
+  display: block;
+  color: var(--gat-web-text-mute, #555);
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
+}
+
+/* Filter-Bar */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--gat-web-border, #e4e0d8);
+  border-radius: 8px;
+  background: #fff;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+.filter-bar__group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+.filter-chip {
+  cursor: pointer;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--gat-web-border, #d0cbc0);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 0.9rem;
+  color: var(--gat-web-text, #1f1f1f);
+  user-select: none;
+}
+.filter-chip[aria-pressed="true"] {
+  background: var(--gat-color-dunkelgruen, #005538);
+  color: #fff;
+  border-color: var(--gat-color-dunkelgruen, #005538);
+}
+.filter-bar__label {
+  font-size: 0.9rem;
+  color: var(--gat-web-text-mute, #555);
+  margin-right: 0.25rem;
+}
+
+/* Detail-Seite */
+.werkzeug-detail__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--gat-web-border, #e4e0d8);
+  margin-bottom: 1.5rem;
+}
+.werkzeug-detail__title {
+  margin: 0;
+  font-size: clamp(1.6rem, 2vw + 1rem, 2.4rem);
+  color: var(--gat-color-dunkelgruen, #005538);
+}
+.werkzeug-detail__lead {
+  margin: 0;
+  color: var(--gat-web-text-mute, #555);
+  font-size: 1.05rem;
+  max-width: 70ch;
+}
+.werkzeug-detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.werkzeug-meta-tabelle {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1rem;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+}
+.werkzeug-meta-tabelle dt {
+  font-weight: 700;
+  color: var(--gat-web-text-mute, #555);
+}
+.werkzeug-meta-tabelle dd {
+  margin: 0;
+}
+
+.werkzeug-body {
+  max-width: 70ch;
+  line-height: 1.65;
+}
+.werkzeug-body h2 {
+  margin-top: 2rem;
+  color: var(--gat-color-dunkelgruen, #005538);
+}
+.werkzeug-body a {
+  color: var(--gat-color-dunkelgruen, #005538);
+}
+.werkzeug-body code {
+  background: #efece5;
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+
+/* Backlinks */
+.backlinks {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--gat-web-border, #e4e0d8);
+}
+.backlinks h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  color: var(--gat-color-dunkelgruen, #005538);
+}
+
+/* Datenschutz-Badge */
+.ds-badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid currentColor;
+  background: transparent;
+}
+.ds-badge--on-device   { color: #1f6f43; }
+.ds-badge--saas-eu     { color: #2c5d9b; }
+.ds-badge--saas-de     { color: #2c5d9b; }
+.ds-badge--saas-at     { color: #2c5d9b; }
+.ds-badge--saas-us     { color: #8a4a00; }
+.ds-badge--self-host   { color: #6a3aa1; }
+.ds-badge--kostenlos   { color: #1f1f1f; }
+.ds-badge--proprietary { color: #8a4a00; }
+
+/* Such-UI */
+.suche-wrap {
+  margin-top: 1rem;
+}
+
+/* Such-Index nach Build: die Pagefind-UI generiert eigene Klassen,
+   wir setzen nur ein paar Variablen, damit die Farben zur DS passen. */
+:root {
+  --pagefind-ui-primary: var(--gat-color-dunkelgruen, #005538);
+  --pagefind-ui-text:    var(--gat-web-text, #1f1f1f);
+  --pagefind-ui-background: #fff;
+  --pagefind-ui-border:  var(--gat-web-border, #e4e0d8);
+  --pagefind-ui-tag:     var(--gat-web-bg, #f7f5f0);
+  --pagefind-ui-border-radius: 8px;
+  --pagefind-ui-font: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Header-Anpassung: Werkzeuge-Site nutzt --kompakt */
+.gat-header__nav-list a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+}
+.gat-header__nav-list a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  main.werkzeuge-main { padding: 1.25rem 0.75rem 2.5rem; }
+  .werkzeug-meta-tabelle { grid-template-columns: 1fr; gap: 0.15rem 0; }
+  .werkzeug-meta-tabelle dt { margin-top: 0.5rem; }
+}

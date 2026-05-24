@@ -1,0 +1,29 @@
+research_model: opus
+plan_model: opus
+execute_model: sonnet
+
+source:
+  type: github
+  repo: GrueneAT/werkzeuge
+  sync_on_create: true
+
+github:
+  repo: GrueneAT/werkzeuge
+
+naming:
+  branch: "issue/{slug}"
+  prefix: ""
+  separator: "-"
+
+commits:
+  format: conventional
+  prefix: true
+
+commit_artifacts: true
+worktrees: true
+worktree_dir: ".worktrees"
+staleness_days: 7
+
+repos:
+  - name: werkzeuge
+    path: .

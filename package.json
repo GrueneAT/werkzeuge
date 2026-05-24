@@ -1,0 +1,22 @@
+{
+  "name": "werkzeuge",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Werkzeug-Verzeichnis fuer Gruene-Gemeindegruppen und kommunalpolitische Arbeit",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "index": "pagefind --site dist",
+    "postbuild": "pagefind --site dist"
+  },
+  "dependencies": {
+    "astro": "^5.0.0"
+  },
+  "devDependencies": {
+    "pagefind": "^1.1.1"
+  },
+  "packageManager": "pnpm@9.0.0"
+}

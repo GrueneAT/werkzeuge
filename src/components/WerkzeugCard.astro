@@ -1,0 +1,54 @@
+---
+import { kategorieLabel } from '../lib/kategorien';
+
+interface Props {
+  entry: {
+    id: string;
+    data: {
+      title: string;
+      slug: string;
+      own_tool: boolean;
+      status: string;
+      categories: string[];
+      tags: string[];
+    };
+    body?: string;
+  };
+  /** optional kuerzere Variante fuer Backlinks */
+  variant?: 'default' | 'compact';
+}
+
+const { entry, variant = 'default' } = Astro.props as Props;
+const BASE = import.meta.env.BASE_URL;
+const href = `${BASE}werkzeug/${entry.data.slug}/`;
+
+// 1-Zeilen-Beschreibung: erster non-blank Paragraph aus dem Markdown-Body,
+// auf ~160 Zeichen gekuerzt.
+const rawBody = (entry as any).body ?? '';
+const firstPara = rawBody
+  .split(/\n{2,}/)
+  .map((p: string) => p.trim())
+  .find((p: string) => p && !p.startsWith('#') && !p.startsWith('---'))
+  ?? '';
+const stripped = firstPara.replace(/\*\*/g, '').replace(/\n+/g, ' ').replace(/`([^`]+)`/g, '$1');
+const shortDesc = stripped.length > 180 ? stripped.slice(0, 177) + '...' : stripped;
+---
+<a class="werkzeug-card" href={href} data-own-tool={String(entry.data.own_tool)} data-categories={entry.data.categories.join(',')}>
+  <div class="werkzeug-card__top">
+    <h3 class="werkzeug-card__title">{entry.data.title}</h3>
+    {entry.data.own_tool
+      ? <span class="gat-tag gat-tag--ok" title="Eigenes Gruene-Tool">Eigen</span>
+      : <span class="gat-tag gat-tag--neutral" title="Kuratiertes Dritt-Tool">Dritt</span>}
+  </div>
+  {variant !== 'compact' && shortDesc && <p class="werkzeug-card__desc">{shortDesc}</p>}
+  {variant !== 'compact' && entry.data.categories.length > 0 && (
+    <div class="werkzeug-card__meta">
+      {entry.data.categories.map((c) => (
+        <span class="gat-tag gat-tag--neutral">{kategorieLabel(c)}</span>
+      ))}
+      {entry.data.status !== 'live' && (
+        <span class="gat-tag gat-tag--warn">{entry.data.status}</span>
+      )}
+    </div>
+  )}
+</a>

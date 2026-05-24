@@ -1,0 +1,40 @@
+---
+// Pagefind-Such-UI. Pagefind generiert ein eigenes JS-Modul nach `astro build`
+// und schreibt es nach `dist/pagefind/`. Die UI laed sich on-demand.
+const BASE = import.meta.env.BASE_URL;
+---
+<div class="suche-wrap">
+  <div id="search"></div>
+</div>
+
+<link rel="stylesheet" href={`${BASE}pagefind/pagefind-ui.css`} />
+<script type="module" is:inline define:vars={{ BASE }}>
+  // Pagefind-UI bootstrappen — der Pfad zeigt auf den Build-Output unter /pagefind/.
+  // Wenn der Index noch nicht erzeugt ist (lokaler dev-Server), faellt die
+  // Such-Box stumm aus, ohne JS-Fehler.
+  async function init() {
+    try {
+      // @ts-ignore — runtime import, in TS-check unbekannt
+      const mod = await import(`${BASE}pagefind/pagefind-ui.js`);
+      const PagefindUI = mod.PagefindUI || mod.default;
+      new PagefindUI({
+        element: '#search',
+        showImages: false,
+        showSubResults: true,
+        resetStyles: false,
+        translations: {
+          placeholder: 'Werkzeuge durchsuchen ...',
+          zero_results: 'Keine Treffer fuer "[SEARCH_TERM]"',
+          many_results: '[COUNT] Treffer fuer "[SEARCH_TERM]"',
+          one_result: '1 Treffer fuer "[SEARCH_TERM]"',
+          searching: 'Suche "[SEARCH_TERM]" ...',
+        },
+      });
+    } catch (e) {
+      console.warn('Pagefind nicht verfuegbar (dev-Modus?):', e);
+      const el = document.getElementById('search');
+      if (el) el.innerHTML = '<p><em>Suche ist nur in der gebauten Site verfuegbar (pnpm run build && pnpm exec pagefind --site dist).</em></p>';
+    }
+  }
+  init();
+</script>
