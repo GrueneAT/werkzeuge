@@ -25,7 +25,7 @@ const desc = description ?? 'Werkzeug-Verzeichnis fuer Gruene-Gemeindegruppen un
   </head>
   <body>
     <a class="gat-skiplink" href="#main">Zum Hauptinhalt springen</a>
-    <header class="gat-header gat-header--kompakt">
+    <header class="gat-header">
       <div class="gat-header__inner">
         <a class="gat-header__brand" href={BASE}>
           <img class="gat-header__logo"
@@ -33,7 +33,7 @@ const desc = description ?? 'Werkzeug-Verzeichnis fuer Gruene-Gemeindegruppen un
                alt="Die Grünen" />
           <span class="gat-header__wordmark">Werkzeuge</span>
         </a>
-        <nav aria-label="Hauptnavigation">
+        <nav class="gat-header__nav" aria-label="Hauptnavigation">
           <ul class="gat-header__nav-list">
             <li><a href={url('/alle/')}>Alle Werkzeuge</a></li>
             <li><a href={url('/#kategorien')}>Kategorien</a></li>
