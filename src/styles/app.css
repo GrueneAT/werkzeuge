@@ -89,7 +89,7 @@ main.werkzeuge-main {
   margin-top: 0.4rem;
 }
 
-/* Werkzeug-Liste (alle/) */
+/* Werkzeug-Liste (Startseite + Verzeichnis) */
 .werkzeug-liste {
   display: grid;
   gap: 1rem;
