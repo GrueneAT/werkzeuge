@@ -6,7 +6,7 @@ Werkzeug-Verzeichnis fuer Gruene-AT-Gemeindegruppen.
 
 - Statische Astro-Site, eine Karte pro digitalem Werkzeug (eigene Tools +
   kuratierte Dritt-Tools)
-- Live: https://grueneat.github.io/werkzeuge/ (Phase 1)
+- Live: https://werkzeuge.gruene.at/ (Phase 1)
 - Spaeter: https://werkzeuge.gruene.at/ (Phase 4, sobald DNS gesetzt)
 
 ## Stack

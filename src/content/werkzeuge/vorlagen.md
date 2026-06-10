@@ -1,7 +1,7 @@
 ---
 title: Vorlagen
 slug: vorlagen
-url: https://grueneat.github.io/vorlagen/
+url: https://vorlagen.noe.gruene.at/
 source: https://github.com/GrueneAT/vorlagen
 own_tool: true
 status: live

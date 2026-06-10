@@ -5,7 +5,7 @@ Arbeit. Listet eigene Gruene-Tools (gemeindefinanzen, bildgenerator,
 Gemeindeordnung, personenwahl, vorlagen) und kuratierte Dritt-Tools
 (Jitsi, termino.gv.at, gruenerator).
 
-**Live:** https://grueneat.github.io/werkzeuge/
+**Live:** https://werkzeuge.gruene.at/
 
 (Spaeter: https://werkzeuge.gruene.at/ — DNS-CNAME steht noch aus.)
 

@@ -1,7 +1,7 @@
 ---
 title: Personenauswahl (Buergerinnenrat)
 slug: personenwahl
-url: https://flomotlik.github.io/buergerinnenrat/
+url: https://personenwahl.gruene.at/
 source: https://github.com/flomotlik/buergerinnenrat
 own_tool: true
 status: beta
