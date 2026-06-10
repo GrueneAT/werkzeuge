@@ -1,7 +1,7 @@
 ---
 title: Gemeindefinanzen
 slug: gemeindefinanzen
-url: https://grueneat.github.io/gemeindefinanzen/
+url: https://gemeindefinanzen.gruene.at/
 source: https://github.com/GrueneAT/gemeindefinanzen
 own_tool: true
 status: live
