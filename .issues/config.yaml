@@ -12,8 +12,6 @@ github:
 
 naming:
   branch: "issue/{slug}"
-  prefix: ""
-  separator: "-"
 
 commits:
   format: conventional
