@@ -16,31 +16,47 @@ const { counts, bereiche, bundeslaender } = Astro.props as Props;
 const aktiveKategorien = Object.entries(KATEGORIEN).filter(([id]) => (counts[id] ?? 0) > 0);
 const aktiveBereiche = bereiche.filter((id) => BEREICHE[id]);
 ---
+{/*
+  Single-Select: ueber alle Gruppen hinweg ist immer nur EIN Filter aktiv
+  (Highlights / Alle / ein Bereich / eine Kategorie / ein Bundesland). Ein Klick
+  ersetzt die vorige Auswahl — keine Kombinationen, damit es nicht kompliziert
+  wird. Jeder Chip traegt seinen Facetten-Typ in data-facet.
+*/}
 <div class="filter-bar" data-filter-bar data-highlight-bereiche={HIGHLIGHT_BEREICHE.join(',')}>
-  <span class="filter-bar__label">Bereich:</span>
-  <div class="filter-bar__group" data-filter-group="bereich">
-    <button class="filter-chip" type="button" data-value="highlights" aria-pressed="true">Highlights</button>
-    {aktiveBereiche.map((id) => (
-      <button class="filter-chip" type="button" data-value={id} aria-pressed="false">{BEREICHE[id]}</button>
-    ))}
-    <button class="filter-chip" type="button" data-value="all" aria-pressed="false">Alle</button>
+  <span class="filter-bar__label">Ansicht:</span>
+  <div class="filter-bar__group">
+    <button class="filter-chip" type="button" data-facet="highlights" data-value="" aria-pressed="true">Highlights</button>
+    <button class="filter-chip" type="button" data-facet="all" data-value="" aria-pressed="false">Alle</button>
   </div>
 
-  <span class="filter-bar__label" style="margin-left:1rem;">Kategorie:</span>
-  <div class="filter-bar__group" data-filter-group="category">
-    <button class="filter-chip" type="button" data-value="" aria-pressed="true">Alle</button>
-    {aktiveKategorien.map(([id, label]) => (
-      <button class="filter-chip" type="button" data-value={id} aria-pressed="false">{label}</button>
-    ))}
-  </div>
+  {aktiveBereiche.length > 0 && (
+    <>
+      <span class="filter-bar__label" style="margin-left:1rem;">Bereich:</span>
+      <div class="filter-bar__group">
+        {aktiveBereiche.map((id) => (
+          <button class="filter-chip" type="button" data-facet="bereich" data-value={id} aria-pressed="false">{BEREICHE[id]}</button>
+        ))}
+      </div>
+    </>
+  )}
+
+  {aktiveKategorien.length > 0 && (
+    <>
+      <span class="filter-bar__label" style="margin-left:1rem;">Kategorie:</span>
+      <div class="filter-bar__group">
+        {aktiveKategorien.map(([id, label]) => (
+          <button class="filter-chip" type="button" data-facet="category" data-value={id} aria-pressed="false">{label}</button>
+        ))}
+      </div>
+    </>
+  )}
 
   {bundeslaender.length > 0 && (
     <>
       <span class="filter-bar__label" style="margin-left:1rem;">Bundesland:</span>
-      <div class="filter-bar__group" data-filter-group="bundesland">
-        <button class="filter-chip" type="button" data-value="" aria-pressed="true">Alle</button>
+      <div class="filter-bar__group">
         {bundeslaender.map((code) => (
-          <button class="filter-chip" type="button" data-value={code} aria-pressed="false">{bundeslandLabel(code)}</button>
+          <button class="filter-chip" type="button" data-facet="bundesland" data-value={code} aria-pressed="false">{bundeslandLabel(code)}</button>
         ))}
       </div>
     </>
@@ -53,8 +69,8 @@ const aktiveBereiche = bereiche.filter((id) => BEREICHE[id]);
     if (!bar) return;
     const highlightBereiche = (bar.dataset.highlightBereiche || '').split(',').filter(Boolean);
 
-    // Default: nur das Highlights-Set zeigen, statt von Anfang an alle Tools.
-    const state = { bereich: 'highlights', category: '', bundesland: '' };
+    // Genau ein aktiver Filter (Facette + Wert). Default: Highlights.
+    const state = { facet: 'highlights', value: '' };
 
     function applyFilters() {
       const cards = document.querySelectorAll('.werkzeug-card[data-bereich]');
@@ -65,39 +81,41 @@ const aktiveBereiche = bereiche.filter((id) => BEREICHE[id]);
         const bls = (el.dataset.bundesland || '').split(',').filter(Boolean);
 
         let show = true;
-        if (state.bereich === 'highlights') {
-          if (!highlightBereiche.includes(bereich)) show = false;
-        } else if (state.bereich !== 'all') {
-          if (bereich !== state.bereich) show = false;
+        switch (state.facet) {
+          case 'highlights':
+            show = highlightBereiche.includes(bereich);
+            break;
+          case 'all':
+            show = true;
+            break;
+          case 'bereich':
+            show = bereich === state.value;
+            break;
+          case 'category':
+            show = cats.includes(state.value);
+            break;
+          case 'bundesland':
+            // Exklusiv: nur Tools dieses Bundeslands (bundesweite ausgeblendet).
+            show = bls.includes(state.value);
+            break;
         }
-        if (state.category && !cats.includes(state.category)) show = false;
-        // Bundesland: leeres Tag = bundesweit (ueberall sichtbar); sonst muss
-        // der gewaehlte Code enthalten sein.
-        if (state.bundesland && bls.length > 0 && !bls.includes(state.bundesland)) show = false;
-
         el.style.display = show ? '' : 'none';
       });
     }
 
-    bar.querySelectorAll('[data-filter-group]').forEach((group) => {
-      const groupName = (group as HTMLElement).dataset.filterGroup as
-        | 'bereich'
-        | 'category'
-        | 'bundesland';
-      group.querySelectorAll('button.filter-chip').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          group.querySelectorAll('button.filter-chip').forEach((b) => {
-            b.setAttribute('aria-pressed', 'false');
-          });
-          btn.setAttribute('aria-pressed', 'true');
-          state[groupName] = (btn as HTMLElement).dataset.value || '';
-          applyFilters();
-        });
+    // Single-Select ueber ALLE Gruppen: ein Klick loescht jede andere Auswahl.
+    bar.querySelectorAll('button.filter-chip').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        bar.querySelectorAll('button.filter-chip').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+        btn.setAttribute('aria-pressed', 'true');
+        const el = btn as HTMLElement;
+        state.facet = el.dataset.facet || 'all';
+        state.value = el.dataset.value || '';
+        applyFilters();
       });
     });
 
-    // Default-Highlights-Ansicht sofort anwenden (Progressive Enhancement:
-    // ohne JS bleiben alle Karten sichtbar).
+    // Default-Highlights-Ansicht sofort anwenden (ohne JS bleiben alle sichtbar).
     applyFilters();
   })();
 </script>
