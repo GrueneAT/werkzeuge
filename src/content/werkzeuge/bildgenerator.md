@@ -4,6 +4,8 @@ slug: bildgenerator
 url: https://bildgenerator.gruene.at
 source: https://github.com/GrueneAT/bildgenerator
 own_tool: true
+bereich: eigene-tools
+bundesland: []
 status: live
 maintained_by: GrueneAT
 hosted_by: GrueneAT (GitHub Pages)

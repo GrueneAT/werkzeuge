@@ -32,12 +32,20 @@ Jedes Werkzeug = `src/content/werkzeuge/<slug>.md`. Schema:
 ```ts
 {
   title, slug, url, source?, own_tool, status,
+  bereich,                    // 'standardtools' | 'eigene-tools' | 'admin' | 'bundesbuero' | 'sonstiges' (lib/bereiche.ts)
+  bundesland: string[],       // BL-Codes (z. B. ['noe']); leer = bundesweit (lib/bundeslaender.ts)
   maintained_by, hosted_by, license, language,
   categories: string[], audience: string[], tags: string[],
   related: string[],          // Backlinks werden automatisch gebaut
   last_verified: Date
 }
 ```
+
+**Startseite (`/`)**: filterbare Liste, Default = „Highlights" (Standardtools +
+eigene Werkzeuge); Filter nach Bereich, Kategorie und — wenn landesspezifische
+Tools existieren — Bundesland. Eigene (Gruene-betriebene) Tools tragen einen
+gruenen Farb-Akzent statt eines Eigen/Dritt-Filters. `/verzeichnis/` = nach
+Bereich gruppierte Detail-Index-Seite.
 
 Backlinks (Sektion "Verlinkt von" auf der Detail-Seite) werden zur Build-Zeit
 aus dem `related`-Graphen berechnet — kein manueller Pflegeaufwand pro Tool.

@@ -9,6 +9,13 @@ const werkzeuge = defineCollection({
     url: z.string().url(),
     source: z.string().url().nullable().optional(),
     own_tool: z.boolean(),
+    // Org-Bereich (orthogonal zu den fachlichen `categories`): bestimmt die
+    // Gruppierung/Sortierung auf der Startseite. Standardtools + eigene
+    // Werkzeuge bilden das Default-"Highlights"-Set; siehe lib/bereiche.ts.
+    bereich: z.enum(['standardtools', 'eigene-tools', 'admin', 'bundesbuero', 'sonstiges']),
+    // Bundesland-Codes fuer landesspezifische Tools (z. B. ['noe']). Leer =
+    // bundesweit. Steuert den Bundesland-Filter (siehe lib/bundeslaender.ts).
+    bundesland: z.array(z.string()).default([]),
     status: z.enum(['live', 'beta', 'unreleased', 'unmaintained']),
     maintained_by: z.string(),
     hosted_by: z.string(),

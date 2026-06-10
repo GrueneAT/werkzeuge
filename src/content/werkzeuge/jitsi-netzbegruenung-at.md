@@ -4,6 +4,8 @@ slug: jitsi-netzbegruenung-at
 url: https://konferenz.netzbegruenung.at/
 source: https://github.com/jitsi/jitsi-meet
 own_tool: false
+bereich: sonstiges
+bundesland: []
 status: live
 maintained_by: Netzbegruenung (AT-Instanz)
 hosted_by: Netzbegruenung

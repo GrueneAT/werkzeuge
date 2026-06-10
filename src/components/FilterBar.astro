@@ -1,55 +1,89 @@
 ---
 import { KATEGORIEN } from '../lib/kategorien';
+import { BEREICHE, HIGHLIGHT_BEREICHE } from '../lib/bereiche';
+import { bundeslandLabel } from '../lib/bundeslaender';
 
 interface Props {
-  /** nur Kategorien mit mindestens 1 Werkzeug zeigen */
+  /** Kategorie-Counts — nur Kategorien mit >=1 Werkzeug zeigen */
   counts: Record<string, number>;
+  /** vorhandene Bereiche, in Anzeige-Reihenfolge */
+  bereiche: string[];
+  /** vorhandene Bundesland-Codes (leer = kein Bundesland-Filter) */
+  bundeslaender: string[];
 }
 
-const { counts } = Astro.props as Props;
-const aktive = Object.entries(KATEGORIEN).filter(([id]) => (counts[id] ?? 0) > 0);
+const { counts, bereiche, bundeslaender } = Astro.props as Props;
+const aktiveKategorien = Object.entries(KATEGORIEN).filter(([id]) => (counts[id] ?? 0) > 0);
+const aktiveBereiche = bereiche.filter((id) => BEREICHE[id]);
 ---
-<div class="filter-bar" data-filter-bar>
-  <span class="filter-bar__label">Typ:</span>
-  <div class="filter-bar__group" data-filter-group="own_tool">
-    <button class="filter-chip" type="button" data-value="all" aria-pressed="true">Alle</button>
-    <button class="filter-chip" type="button" data-value="own" aria-pressed="false">Nur eigene</button>
-    <button class="filter-chip" type="button" data-value="third" aria-pressed="false">Nur Dritt</button>
+<div class="filter-bar" data-filter-bar data-highlight-bereiche={HIGHLIGHT_BEREICHE.join(',')}>
+  <span class="filter-bar__label">Bereich:</span>
+  <div class="filter-bar__group" data-filter-group="bereich">
+    <button class="filter-chip" type="button" data-value="highlights" aria-pressed="true">Highlights</button>
+    {aktiveBereiche.map((id) => (
+      <button class="filter-chip" type="button" data-value={id} aria-pressed="false">{BEREICHE[id]}</button>
+    ))}
+    <button class="filter-chip" type="button" data-value="all" aria-pressed="false">Alle</button>
   </div>
 
   <span class="filter-bar__label" style="margin-left:1rem;">Kategorie:</span>
   <div class="filter-bar__group" data-filter-group="category">
     <button class="filter-chip" type="button" data-value="" aria-pressed="true">Alle</button>
-    {aktive.map(([id, label]) => (
+    {aktiveKategorien.map(([id, label]) => (
       <button class="filter-chip" type="button" data-value={id} aria-pressed="false">{label}</button>
     ))}
   </div>
+
+  {bundeslaender.length > 0 && (
+    <>
+      <span class="filter-bar__label" style="margin-left:1rem;">Bundesland:</span>
+      <div class="filter-bar__group" data-filter-group="bundesland">
+        <button class="filter-chip" type="button" data-value="" aria-pressed="true">Alle</button>
+        {bundeslaender.map((code) => (
+          <button class="filter-chip" type="button" data-value={code} aria-pressed="false">{bundeslandLabel(code)}</button>
+        ))}
+      </div>
+    </>
+  )}
 </div>
 
 <script>
   (function () {
-    const bar = document.querySelector('[data-filter-bar]');
+    const bar = document.querySelector('[data-filter-bar]') as HTMLElement | null;
     if (!bar) return;
-    const state = { own_tool: 'all', category: '' };
+    const highlightBereiche = (bar.dataset.highlightBereiche || '').split(',').filter(Boolean);
+
+    // Default: nur das Highlights-Set zeigen, statt von Anfang an alle Tools.
+    const state = { bereich: 'highlights', category: '', bundesland: '' };
 
     function applyFilters() {
-      const cards = document.querySelectorAll('.werkzeug-card[data-own-tool]');
+      const cards = document.querySelectorAll('.werkzeug-card[data-bereich]');
       cards.forEach((card) => {
         const el = card as HTMLElement;
-        const isOwn = el.dataset.ownTool === 'true';
+        const bereich = el.dataset.bereich || '';
         const cats = (el.dataset.categories || '').split(',').filter(Boolean);
+        const bls = (el.dataset.bundesland || '').split(',').filter(Boolean);
 
         let show = true;
-        if (state.own_tool === 'own' && !isOwn) show = false;
-        if (state.own_tool === 'third' && isOwn) show = false;
+        if (state.bereich === 'highlights') {
+          if (!highlightBereiche.includes(bereich)) show = false;
+        } else if (state.bereich !== 'all') {
+          if (bereich !== state.bereich) show = false;
+        }
         if (state.category && !cats.includes(state.category)) show = false;
+        // Bundesland: leeres Tag = bundesweit (ueberall sichtbar); sonst muss
+        // der gewaehlte Code enthalten sein.
+        if (state.bundesland && bls.length > 0 && !bls.includes(state.bundesland)) show = false;
 
         el.style.display = show ? '' : 'none';
       });
     }
 
     bar.querySelectorAll('[data-filter-group]').forEach((group) => {
-      const groupName = (group as HTMLElement).dataset.filterGroup as 'own_tool' | 'category';
+      const groupName = (group as HTMLElement).dataset.filterGroup as
+        | 'bereich'
+        | 'category'
+        | 'bundesland';
       group.querySelectorAll('button.filter-chip').forEach((btn) => {
         btn.addEventListener('click', () => {
           group.querySelectorAll('button.filter-chip').forEach((b) => {
@@ -61,5 +95,9 @@ const aktive = Object.entries(KATEGORIEN).filter(([id]) => (counts[id] ?? 0) > 0
         });
       });
     });
+
+    // Default-Highlights-Ansicht sofort anwenden (Progressive Enhancement:
+    // ohne JS bleiben alle Karten sichtbar).
+    applyFilters();
   })();
 </script>

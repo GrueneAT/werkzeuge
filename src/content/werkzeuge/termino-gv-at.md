@@ -4,6 +4,8 @@ slug: termino-gv-at
 url: https://www.termino.gv.at/
 source: null  # nicht offen, Quellcode liegt beim Bund
 own_tool: false
+bereich: sonstiges
+bundesland: []
 status: live
 maintained_by: Bundesrechenzentrum (BRZ) / Bund
 hosted_by: Republik Oesterreich (.gv.at)

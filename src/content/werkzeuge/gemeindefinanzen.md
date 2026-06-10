@@ -4,6 +4,8 @@ slug: gemeindefinanzen
 url: https://gemeindefinanzen.gruene.at/
 source: https://github.com/GrueneAT/gemeindefinanzen
 own_tool: true
+bereich: eigene-tools
+bundesland: []
 status: live
 maintained_by: GrueneAT
 hosted_by: GrueneAT (GitHub Pages)

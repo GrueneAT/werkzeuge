@@ -4,6 +4,8 @@ slug: gruenerator
 url: https://gruenerator.at/
 source: null  # nicht oeffentlich verlinkt
 own_tool: false
+bereich: sonstiges
+bundesland: []
 status: live
 maintained_by: Moritz Waechter
 hosted_by: gruenerator.eu (Domain umleitet von .at und .de)
