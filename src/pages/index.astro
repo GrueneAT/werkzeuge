@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import WerkzeugCard from '../components/WerkzeugCard.astro';
 import FilterBar from '../components/FilterBar.astro';
+import CtaVorschlag from '../components/CtaVorschlag.astro';
 import { bereichOrder, HIGHLIGHT_BEREICHE } from '../lib/bereiche';
 import { BUNDESLAND_IDS } from '../lib/bundeslaender';
 
@@ -56,4 +57,6 @@ const highlightCount = all.filter((e) => HIGHLIGHT_BEREICHE.includes(e.data.bere
   <div class="werkzeug-liste">
     {sorted.map((e) => <WerkzeugCard entry={e} />)}
   </div>
+
+  <CtaVorschlag />
 </Base>

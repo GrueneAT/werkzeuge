@@ -1,0 +1,31 @@
+---
+// Call-to-Action: Werkzeug per E-Mail vorschlagen. Magenta-Button (Grüne
+// "rosa") mit vorbefülltem mailto an den Betreuer des Verzeichnisses.
+const mail = 'florian.motlik@gruene.at';
+const subject = encodeURIComponent('Werkzeug-Vorschlag für werkzeuge.gruene.at');
+const body = encodeURIComponent(
+  [
+    'Hallo Flo,',
+    '',
+    'ich nutze/kenne folgendes Werkzeug, das gut ins Verzeichnis passen würde:',
+    '',
+    '- Name:',
+    '- Link:',
+    '- Wofür / kurze Beschreibung:',
+    '',
+    'Danke!',
+  ].join('\n'),
+);
+const href = `mailto:${mail}?subject=${subject}&body=${body}`;
+---
+<section class="werkzeug-cta" data-pagefind-ignore>
+  <div class="werkzeug-cta__text">
+    <h2 class="werkzeug-cta__title">Du kennst ein Werkzeug, das hier fehlt?</h2>
+    <p>
+      Nutzt ihr ein Tool, das anderen Gruppen helfen könnte — oder kennst du
+      eine gute Empfehlung? Schick es mir, dann nehme ich es ins Verzeichnis
+      auf.
+    </p>
+  </div>
+  <a class="werkzeug-cta__btn" href={href}>Werkzeug vorschlagen</a>
+</section>
