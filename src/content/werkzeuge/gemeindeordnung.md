@@ -4,6 +4,8 @@ slug: gemeindeordnung
 url: https://gemeindeordnung.gruene.at
 source: https://github.com/GrueneAT/Gemeindeordnung
 own_tool: true
+bereich: eigene-tools
+bundesland: []
 status: live
 maintained_by: GrueneAT
 hosted_by: GrueneAT (GitHub Pages)

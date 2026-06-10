@@ -3,31 +3,55 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import WerkzeugCard from '../components/WerkzeugCard.astro';
 import FilterBar from '../components/FilterBar.astro';
+import { bereichOrder, HIGHLIGHT_BEREICHE } from '../lib/bereiche';
+import { BUNDESLAND_IDS } from '../lib/bundeslaender';
 
 const all = await getCollection('werkzeuge');
-const sorted = [...all].sort((a, b) => a.data.title.localeCompare(b.data.title, 'de'));
 
+// Sortierung: erst nach Bereich (Standardtools ganz oben), dann alphabetisch.
+const sorted = [...all].sort((a, b) => {
+  const bo = bereichOrder(a.data.bereich) - bereichOrder(b.data.bereich);
+  if (bo !== 0) return bo;
+  return a.data.title.localeCompare(b.data.title, 'de');
+});
+
+// Kategorie-Counts (fuer den Kategorie-Filter)
 const counts: Record<string, number> = {};
 for (const e of all) {
   for (const c of e.data.categories) {
     counts[c] = (counts[c] ?? 0) + 1;
   }
 }
+
+// Vorhandene Bereiche, in der definierten Reihenfolge
+const vorhandeneBereiche = [...new Set(all.map((e) => e.data.bereich))].sort(
+  (a, b) => bereichOrder(a) - bereichOrder(b),
+);
+
+// Vorhandene Bundeslaender (in kanonischer Reihenfolge) — der Filter erscheint
+// nur, wenn es ueberhaupt landesspezifische Tools gibt.
+const vorhandeneBundeslaender = BUNDESLAND_IDS.filter((code) =>
+  all.some((e) => (e.data.bundesland ?? []).includes(code)),
+);
+
+const highlightCount = all.filter((e) => HIGHLIGHT_BEREICHE.includes(e.data.bereich)).length;
 ---
-<Base title="Werkzeuge" description="Werkzeug-Verzeichnis fuer Gruene-Gemeindegruppen — eigene Tools und kuratierte Dritt-Tools, filterbar nach Typ und Kategorie.">
+<Base title="Werkzeuge" description="Werkzeug-Verzeichnis fuer Gruene-Gemeindegruppen — Standardtools, eigene Tools und kuratierte Empfehlungen, filterbar nach Bereich, Kategorie und Bundesland.">
   <section class="werkzeuge-hero">
     <h1>Werkzeuge fuer Gemeindegruppen</h1>
     <p>
-      Eine kuratierte Sammlung digitaler Werkzeuge fuer Gruene-Gemeindegruppen
-      und kommunalpolitische Arbeit. Filtere unten nach Typ oder Kategorie —
-      oder sieh dir das nach Themen geordnete
-      <a href={`${import.meta.env.BASE_URL}verzeichnis/`}>Verzeichnis</a> an.
+      Standardtools, eigene Werkzeuge und kuratierte Empfehlungen fuer
+      Gruene-Gemeindegruppen und kommunalpolitische Arbeit. Standardmaessig
+      siehst du die <strong>Highlights</strong> — Standardtools und eigene
+      Werkzeuge. Ueber den Bereich-Filter (z. B. <em>Alle</em>) blendest du
+      die uebrigen Tools ein. Alternativ das nach Themen geordnete
+      <a href={`${import.meta.env.BASE_URL}verzeichnis/`}>Verzeichnis</a>.
     </p>
   </section>
 
-  <p>{sorted.length} Werkzeuge insgesamt. Filtere nach Typ oder Kategorie.</p>
+  <p>{highlightCount} Highlights von {all.length} Werkzeugen. Filtere nach Bereich, Kategorie{vorhandeneBundeslaender.length > 0 ? ' oder Bundesland' : ''}.</p>
 
-  <FilterBar counts={counts} />
+  <FilterBar counts={counts} bereiche={vorhandeneBereiche} bundeslaender={vorhandeneBundeslaender} />
 
   <div class="werkzeug-liste">
     {sorted.map((e) => <WerkzeugCard entry={e} />)}

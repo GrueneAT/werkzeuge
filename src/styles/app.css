@@ -65,6 +65,17 @@ main.werkzeuge-main {
   transform: translateY(-1px);
   outline: none;
 }
+
+/* Farb-Differenzierung statt Eigen/Dritt-Filter: eigene (Gruene-betriebene)
+   Tools tragen einen gruenen Akzent (linke Kante + zarter Tint), kuratierte
+   Dritt-Tools bleiben neutral-weiss. */
+.werkzeug-card[data-own-tool='true'] {
+  border-left: 4px solid var(--gat-web-green, #66a522);
+  background: var(--gat-web-green-tint, #f2f7ea);
+}
+.werkzeug-card[data-own-tool='false'] {
+  border-left: 4px solid var(--gat-web-hairline, #e4e0d8);
+}
 .werkzeug-card__top {
   display: flex;
   align-items: baseline;

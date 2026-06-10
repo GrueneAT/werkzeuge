@@ -8,6 +8,8 @@ interface Props {
       title: string;
       slug: string;
       own_tool: boolean;
+      bereich: string;
+      bundesland: string[];
       status: string;
       categories: string[];
       tags: string[];
@@ -33,7 +35,7 @@ const firstPara = rawBody
 const stripped = firstPara.replace(/\*\*/g, '').replace(/\n+/g, ' ').replace(/`([^`]+)`/g, '$1');
 const shortDesc = stripped.length > 180 ? stripped.slice(0, 177) + '...' : stripped;
 ---
-<a class="werkzeug-card" href={href} data-own-tool={String(entry.data.own_tool)} data-categories={entry.data.categories.join(',')}>
+<a class="werkzeug-card" href={href} data-own-tool={String(entry.data.own_tool)} data-bereich={entry.data.bereich} data-bundesland={(entry.data.bundesland ?? []).join(',')} data-categories={entry.data.categories.join(',')}>
   <div class="werkzeug-card__top">
     <h3 class="werkzeug-card__title">{entry.data.title}</h3>
     {entry.data.own_tool

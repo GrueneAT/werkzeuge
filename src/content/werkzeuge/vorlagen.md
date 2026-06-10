@@ -4,6 +4,8 @@ slug: vorlagen
 url: https://vorlagen.noe.gruene.at/
 source: https://github.com/GrueneAT/vorlagen
 own_tool: true
+bereich: eigene-tools
+bundesland: []
 status: live
 maintained_by: GrueneAT
 hosted_by: GrueneAT (GitHub Pages)

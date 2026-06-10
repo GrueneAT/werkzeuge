@@ -3,10 +3,18 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import WerkzeugCard from '../components/WerkzeugCard.astro';
 import KategorienGrid from '../components/KategorienGrid.astro';
+import { BEREICHE, BEREICH_IDS } from '../lib/bereiche';
 
 const all = await getCollection('werkzeuge');
-const eigene = all.filter((e) => e.data.own_tool).sort((a, b) => a.data.title.localeCompare(b.data.title, 'de'));
-const dritt  = all.filter((e) => !e.data.own_tool).sort((a, b) => a.data.title.localeCompare(b.data.title, 'de'));
+
+// Nach Bereich gruppieren, in der definierten Reihenfolge (Standardtools oben).
+const proBereich = BEREICH_IDS.map((id) => ({
+  id,
+  label: BEREICHE[id],
+  tools: all
+    .filter((e) => e.data.bereich === id)
+    .sort((a, b) => a.data.title.localeCompare(b.data.title, 'de')),
+})).filter((g) => g.tools.length > 0);
 
 // Kategorie-Counts berechnen
 const counts: Record<string, number> = {};
@@ -16,37 +24,29 @@ for (const e of all) {
   }
 }
 ---
-<Base title="Verzeichnis" description="Detailliertes Verzeichnis der Werkzeuge fuer Gruene-Gemeindegruppen — nach eigenen Tools, Kategorien und kuratierten Dritt-Tools geordnet.">
+<Base title="Verzeichnis" description="Detailliertes Verzeichnis der Werkzeuge fuer Gruene-Gemeindegruppen — nach Bereich (Standardtools, eigene Werkzeuge, Admin, Bundesbuero, Sonstiges) und Kategorie geordnet.">
   <section class="werkzeuge-hero">
     <h1>Verzeichnis</h1>
     <p>
-      Alle Werkzeuge nach Themen geordnet: eigene Tools, Kategorien und
-      kuratierte Empfehlungen fuer Kommunikation, Beteiligung,
-      Veranstaltungen, Branding und Recherche. Lieber filtern?
+      Alle Werkzeuge nach Bereich geordnet: Standardtools, eigene Werkzeuge,
+      Admin-Tools, Bundesbuero und Sonstiges. Lieber filtern?
       <a href={import.meta.env.BASE_URL}>Zur filterbaren Uebersicht</a>.
     </p>
   </section>
 
-  <section data-pagefind-ignore>
-    <h2 class="gat-headline" style="margin-top:2rem;">Eigene Werkzeuge</h2>
-    <div class="werkzeug-liste">
-      {eigene.map((e) => <WerkzeugCard entry={e} />)}
-    </div>
-  </section>
+  {proBereich.map((g) => (
+    <section data-pagefind-ignore>
+      <h2 class="gat-headline" style="margin-top:2rem;">{g.label}</h2>
+      <div class="werkzeug-liste">
+        {g.tools.map((e) => <WerkzeugCard entry={e} />)}
+      </div>
+    </section>
+  ))}
 
   <section id="kategorien" data-pagefind-ignore>
     <h2 class="gat-headline" style="margin-top:2rem;">Nach Kategorie</h2>
     <KategorienGrid counts={counts} />
   </section>
-
-  {dritt.length > 0 && (
-    <section data-pagefind-ignore>
-      <h2 class="gat-headline" style="margin-top:2rem;">Kuratierte Dritt-Werkzeuge</h2>
-      <div class="werkzeug-liste">
-        {dritt.map((e) => <WerkzeugCard entry={e} />)}
-      </div>
-    </section>
-  )}
 
   <p style="margin-top:2rem;">
     <a class="gat-btn gat-btn--secondary" href={import.meta.env.BASE_URL}>
