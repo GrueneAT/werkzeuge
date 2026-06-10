@@ -80,7 +80,7 @@ pnpm run preview                   # serviert dist/
 ## Stack
 
 - [Astro 5](https://astro.build/) mit Content Collections
-- [Design System v2.2](https://grueneat.github.io/design-system/) per CDN
+- [Design System v2.2](https://design-system.gruene.at/) per CDN
 - [Pagefind](https://pagefind.app/) fuer Volltextsuche
 - [pnpm](https://pnpm.io/) als Package-Manager
 - GitHub Pages als Hosting

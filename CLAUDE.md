@@ -12,7 +12,7 @@ Werkzeug-Verzeichnis fuer Gruene-AT-Gemeindegruppen.
 ## Stack
 
 - **Astro 5** mit Content Collections (Zod-Schema in `src/content.config.ts`)
-- **DS v2.2** als externer Stylesheet von `https://grueneat.github.io/design-system/design-system.css` — **kein Vendoring**, kein Tailwind
+- **DS v2.2** als externer Stylesheet von `https://design-system.gruene.at/design-system.css` — **kein Vendoring**, kein Tailwind
 - **Pagefind** fuer client-seitige Volltextsuche (indexiert `dist/` nach dem Astro-Build)
 - **pnpm** als Package-Manager
 - **GitHub Pages** als Hosting

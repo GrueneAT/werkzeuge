@@ -1,5 +1,5 @@
 /* Werkzeuge — minimaler Site-CSS-Override.
-   Der Loewenanteil kommt aus dem DS (grueneat.github.io/design-system/design-system.css).
+   Der Loewenanteil kommt aus dem DS (design-system.gruene.at/design-system.css).
    Hier nur Layout-Wrapper und Komponenten-Klassen, die das DS nicht abdeckt. */
 
 * { box-sizing: border-box; }
