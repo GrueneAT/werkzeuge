@@ -1,22 +1,24 @@
 ---
 // Call-to-Action: Werkzeug per E-Mail vorschlagen. Magenta-Button (Grüne
-// "rosa") mit vorbefülltem mailto an den Betreuer des Verzeichnisses.
-const mail = 'florian.motlik@gruene.at';
-const subject = encodeURIComponent('Werkzeug-Vorschlag für werkzeuge.gruene.at');
-const body = encodeURIComponent(
-  [
-    'Hallo Flo,',
-    '',
-    'ich nutze/kenne folgendes Werkzeug, das gut ins Verzeichnis passen würde:',
-    '',
-    '- Name:',
-    '- Link:',
-    '- Wofür / kurze Beschreibung:',
-    '',
-    'Danke!',
-  ].join('\n'),
-);
-const href = `mailto:${mail}?subject=${subject}&body=${body}`;
+// "rosa"). Die mailto-Adresse wird NICHT statisch ins HTML geschrieben, sondern
+// erst clientseitig aus Einzelteilen zusammengesetzt — werkzeuge.gruene.at
+// läuft hinter Cloudflare (Proxy), dessen E-Mail-Obfuscation sonst den
+// mailto-Link inkl. Betreff/Body umschreiben würde. So bleibt das vorbefüllte
+// mailto verlässlich erhalten und die Adresse steht nicht scrapebar im Markup.
+const user = 'florian.motlik';
+const domain = 'gruene.at';
+const subject = 'Werkzeug-Vorschlag für werkzeuge.gruene.at';
+const bodyLines = [
+  'Hallo Flo,',
+  '',
+  'ich nutze/kenne folgendes Werkzeug, das gut ins Verzeichnis passen würde:',
+  '',
+  '- Name:',
+  '- Link:',
+  '- Wofür / kurze Beschreibung:',
+  '',
+  'Danke!',
+];
 ---
 <section class="werkzeug-cta" data-pagefind-ignore>
   <div class="werkzeug-cta__text">
@@ -27,5 +29,26 @@ const href = `mailto:${mail}?subject=${subject}&body=${body}`;
       auf.
     </p>
   </div>
-  <a class="werkzeug-cta__btn" href={href}>Werkzeug vorschlagen</a>
+  <a
+    class="werkzeug-cta__btn"
+    href="#"
+    data-cta-mail
+    data-u={user}
+    data-d={domain}
+    data-subject={subject}
+    data-body={bodyLines.join('\n')}
+  >
+    Werkzeug vorschlagen
+  </a>
 </section>
+
+<script>
+  (function () {
+    const a = document.querySelector('[data-cta-mail]') as HTMLAnchorElement | null;
+    if (!a) return;
+    const addr = `${a.dataset.u}@${a.dataset.d}`;
+    const subject = encodeURIComponent(a.dataset.subject || '');
+    const body = encodeURIComponent(a.dataset.body || '');
+    a.setAttribute('href', `mailto:${addr}?subject=${subject}&body=${body}`);
+  })();
+</script>
