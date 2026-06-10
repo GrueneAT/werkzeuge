@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import WerkzeugCard from '../components/WerkzeugCard.astro';
 import KategorienGrid from '../components/KategorienGrid.astro';
+import CtaVorschlag from '../components/CtaVorschlag.astro';
 import { BEREICHE, BEREICH_IDS } from '../lib/bereiche';
 
 const all = await getCollection('werkzeuge');
@@ -53,4 +54,6 @@ for (const e of all) {
       Alle {all.length} Werkzeuge filtern &raquo;
     </a>
   </p>
+
+  <CtaVorschlag />
 </Base>

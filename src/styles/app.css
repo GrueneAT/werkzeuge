@@ -76,6 +76,54 @@ main.werkzeuge-main {
 .werkzeug-card[data-own-tool='false'] {
   border-left: 4px solid var(--gat-web-hairline, #e4e0d8);
 }
+
+/* Call-to-Action „Werkzeug vorschlagen" — Magenta-Button (Grüne „rosa"),
+   zarte Magenta-getönte Box. */
+.werkzeug-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-top: 2.5rem;
+  padding: 1.4rem 1.6rem;
+  border: 1px solid color-mix(in srgb, var(--gat-color-magenta, #e6007e) 30%, #e4e0d8);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--gat-color-magenta, #e6007e) 7%, #fff);
+}
+.werkzeug-cta__text {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+.werkzeug-cta__title {
+  margin: 0 0 0.25rem;
+  font-size: 1.15rem;
+}
+.werkzeug-cta__text p {
+  margin: 0;
+}
+.werkzeug-cta__btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.6rem 1.3rem;
+  border-radius: 8px;
+  background: var(--gat-color-magenta, #e6007e);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 120ms ease, transform 120ms ease;
+}
+.werkzeug-cta__btn:hover {
+  background: color-mix(in srgb, var(--gat-color-magenta, #e6007e) 85%, #000);
+  transform: translateY(-1px);
+}
+.werkzeug-cta__btn:focus-visible {
+  outline: 2px solid var(--gat-color-magenta, #e6007e);
+  outline-offset: 2px;
+}
+
 .werkzeug-card__top {
   display: flex;
   align-items: baseline;
