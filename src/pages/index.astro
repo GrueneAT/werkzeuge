@@ -2,13 +2,11 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import WerkzeugCard from '../components/WerkzeugCard.astro';
-import KategorienGrid from '../components/KategorienGrid.astro';
+import FilterBar from '../components/FilterBar.astro';
 
 const all = await getCollection('werkzeuge');
-const eigene = all.filter((e) => e.data.own_tool).sort((a, b) => a.data.title.localeCompare(b.data.title, 'de'));
-const dritt  = all.filter((e) => !e.data.own_tool).sort((a, b) => a.data.title.localeCompare(b.data.title, 'de'));
+const sorted = [...all].sort((a, b) => a.data.title.localeCompare(b.data.title, 'de'));
 
-// Kategorie-Counts berechnen
 const counts: Record<string, number> = {};
 for (const e of all) {
   for (const c of e.data.categories) {
@@ -16,40 +14,22 @@ for (const e of all) {
   }
 }
 ---
-<Base title="Werkzeuge" description="Werkzeug-Verzeichnis fuer Gruene-Gemeindegruppen — eigene Tools und kuratierte Dritt-Tools fuer kommunalpolitische Arbeit.">
+<Base title="Werkzeuge" description="Werkzeug-Verzeichnis fuer Gruene-Gemeindegruppen — eigene Tools und kuratierte Dritt-Tools, filterbar nach Typ und Kategorie.">
   <section class="werkzeuge-hero">
     <h1>Werkzeuge fuer Gemeindegruppen</h1>
     <p>
       Eine kuratierte Sammlung digitaler Werkzeuge fuer Gruene-Gemeindegruppen
-      und kommunalpolitische Arbeit. Eigene Tools und Empfehlungen fuer
-      Kommunikation, Beteiligung, Veranstaltungen, Branding und Recherche.
+      und kommunalpolitische Arbeit. Filtere unten nach Typ oder Kategorie —
+      oder sieh dir das nach Themen geordnete
+      <a href={`${import.meta.env.BASE_URL}verzeichnis/`}>Verzeichnis</a> an.
     </p>
   </section>
 
-  <section data-pagefind-ignore>
-    <h2 class="gat-headline" style="margin-top:2rem;">Eigene Werkzeuge</h2>
-    <div class="werkzeug-liste">
-      {eigene.map((e) => <WerkzeugCard entry={e} />)}
-    </div>
-  </section>
+  <p>{sorted.length} Werkzeuge insgesamt. Filtere nach Typ oder Kategorie.</p>
 
-  <section id="kategorien" data-pagefind-ignore>
-    <h2 class="gat-headline" style="margin-top:2rem;">Nach Kategorie</h2>
-    <KategorienGrid counts={counts} />
-  </section>
+  <FilterBar counts={counts} />
 
-  {dritt.length > 0 && (
-    <section data-pagefind-ignore>
-      <h2 class="gat-headline" style="margin-top:2rem;">Kuratierte Dritt-Werkzeuge</h2>
-      <div class="werkzeug-liste">
-        {dritt.map((e) => <WerkzeugCard entry={e} />)}
-      </div>
-    </section>
-  )}
-
-  <p style="margin-top:2rem;">
-    <a class="gat-btn gat-btn--secondary" href={`${import.meta.env.BASE_URL}alle/`}>
-      Alle {all.length} Werkzeuge anzeigen &raquo;
-    </a>
-  </p>
+  <div class="werkzeug-liste">
+    {sorted.map((e) => <WerkzeugCard entry={e} />)}
+  </div>
 </Base>
