@@ -5,6 +5,7 @@ url: https://nuudel.digitalcourage.de/
 source: https://framagit.org/framasoft/framadate/framadate
 own_tool: false
 bereich: sonstiges
+highlight: true
 bundesland: []
 status: live
 maintained_by: Digitalcourage e.V. (Framadate-Instanz)

@@ -5,6 +5,7 @@ url: https://personenwahl.gruene.at/
 source: https://github.com/flomotlik/buergerinnenrat
 own_tool: true
 bereich: eigene-tools
+highlight: false
 bundesland: []
 status: beta
 maintained_by: flomotlik (Gruene-AT-naher Entwickler)
