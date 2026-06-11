@@ -14,8 +14,10 @@ const BASE = import.meta.env.BASE_URL;
   // Such-Box stumm aus, ohne JS-Fehler.
   async function init() {
     try {
-      // @ts-ignore — runtime import, in TS-check unbekannt
-      const mod = await import(`${BASE}pagefind/pagefind-ui.js`);
+      // @ts-ignore — runtime import, in TS-check unbekannt. /* @vite-ignore */
+      // verhindert, dass Vite den Pfad zur Build-Zeit aufzuloesen versucht —
+      // pagefind-ui.js entsteht erst nach dem Astro-Build durch Pagefind.
+      const mod = await import(/* @vite-ignore */ `${BASE}pagefind/pagefind-ui.js`);
       const PagefindUI = mod.PagefindUI || mod.default;
       new PagefindUI({
         element: '#search',
