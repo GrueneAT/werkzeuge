@@ -1,48 +1,107 @@
 ---
-// Pagefind-Such-UI. Pagefind generiert ein eigenes JS-Modul nach `astro build`
-// und schreibt es nach `dist/pagefind/`. Die UI laed sich on-demand.
+// Volltextsuche auf Basis der DS-Such-Vorlage (`.gat-search`) + `gat-search.js`.
+//
+// Wechsel weg von der inline gerenderten Pagefind-Default-UI (die Treffer in
+// den Fluss schreibt und den Seiteninhalt nach unten schiebt) hin zum
+// Overlay-Dropdown des Design-Systems: das Ergebnis-Overlay ist absolut
+// positioniert und nimmt KEINEN Platz im Fluss ein -> kein Layout-Shift.
+//
+// Markup-Familie (`.gat-search*`) und Verhaltensmodul (`gat-search.js`) kommen
+// vom DS-CDN — kein Vendoring. Das DS-CSS ist bereits in Base.astro verlinkt;
+// das ES-Modul wird zur Laufzeit von der gleichen Pages-URL importiert.
+//
+// Die Such-Engine bleibt Konsumenten-Aufgabe: ein kleiner Pagefind-Adapter
+// laedt das nach `astro build` von Pagefind erzeugte Bundle (`/pagefind/`)
+// lazy und mappt die Treffer auf das DS-Slot-Schema (title, excerpt, url).
+// Im Dev-Modus existiert dieser Index noch nicht — der Adapter faengt das
+// still ab (leere Trefferliste), ohne JS-Fehler.
 const BASE = import.meta.env.BASE_URL;
 ---
 <div class="suche-wrap">
-  <div id="search"></div>
+  <div class="gat-search" id="werkzeuge-search">
+    <span class="gat-search__icon" aria-hidden="true">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor"
+           stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="9" r="6"></circle>
+        <path d="M14 14l4 4"></path>
+      </svg>
+    </span>
+    <input
+      type="search"
+      class="gat-input gat-search__field"
+      id="werkzeuge-search-input"
+      placeholder="Werkzeuge durchsuchen ..."
+      aria-label="Werkzeuge durchsuchen"
+    />
+    <div class="gat-search__overlay" id="werkzeuge-search-overlay" hidden></div>
+  </div>
 </div>
 
-<link rel="stylesheet" href={`${BASE}pagefind/pagefind-ui.css`} />
 <script type="module" is:inline define:vars={{ BASE }}>
-  // Pagefind-UI bootstrappen — der Pfad zeigt auf den Build-Output unter /pagefind/.
-  // Wenn der Index noch nicht erzeugt ist (lokaler dev-Server), faellt die
-  // Such-Box stumm aus, ohne JS-Fehler.
-  async function init() {
-    try {
-      // @ts-ignore — runtime import, in TS-check unbekannt. /* @vite-ignore */
-      // verhindert, dass Vite den Pfad zur Build-Zeit aufzuloesen versucht —
-      // pagefind-ui.js entsteht erst nach dem Astro-Build durch Pagefind.
-      const mod = await import(/* @vite-ignore */ `${BASE}pagefind/pagefind-ui.js`);
-      // pagefind-ui.js ist ein IIFE-Bundle OHNE ES-Export: es setzt
-      // `window.PagefindUI` als Seiteneffekt. Darum zuerst das globale Handle
-      // nehmen; die Modul-Felder bleiben nur Fallback fuer kuenftige Formate.
-      const PagefindUI = window.PagefindUI || mod.PagefindUI || mod.default;
-      if (typeof PagefindUI !== 'function') {
-        throw new Error('PagefindUI nicht gefunden (window.PagefindUI leer)');
+  // DS-Verhaltensmodul vom Pages-CDN (kein Vendoring, keine npm-Kopie). Das DS
+  // legt das Modul wie `gat-charts.js` neben das CSS.
+  const { createSearch } = await import('https://design-system.gruene.at/gat-search.js');
+
+  // Pagefind-Adapter: laedt das vom Astro-Build erzeugte Pagefind-Bundle erst
+  // zur Laufzeit (dynamic import) und mappt die Treffer auf das DS-Slot-Schema
+  // ({ id, title, excerpt, url }). gat-search uebernimmt Debounce + Race-Guard,
+  // darum hier `debouncedSearch(query, opts, 0)` und `null` (superseded) wird
+  // unveraendert durchgereicht.
+  function pagefindAdapter({ bundlePath, limit = 10 } = {}) {
+    let pf = null;
+    let initPromise = null;
+
+    async function init() {
+      if (pf) return pf;
+      if (!initPromise) {
+        initPromise = (async () => {
+          // pagefind.js entsteht erst nach `astro build` durch Pagefind;
+          // /* @vite-ignore */ verhindert die Aufloesung zur Build-Zeit.
+          const mod = await import(/* @vite-ignore */ `${bundlePath}pagefind.js`);
+          await mod.options({ bundlePath });
+          pf = mod;
+          return pf;
+        })();
       }
-      new PagefindUI({
-        element: '#search',
-        showImages: false,
-        showSubResults: true,
-        resetStyles: false,
-        translations: {
-          placeholder: 'Werkzeuge durchsuchen ...',
-          zero_results: 'Keine Treffer fuer "[SEARCH_TERM]"',
-          many_results: '[COUNT] Treffer fuer "[SEARCH_TERM]"',
-          one_result: '1 Treffer fuer "[SEARCH_TERM]"',
-          searching: 'Suche "[SEARCH_TERM]" ...',
-        },
-      });
-    } catch (e) {
-      console.warn('Pagefind nicht verfuegbar (dev-Modus?):', e);
-      const el = document.getElementById('search');
-      if (el) el.innerHTML = '<p><em>Suche ist nur in der gebauten Site verfuegbar (pnpm run build && pnpm exec pagefind --site dist).</em></p>';
+      return initPromise;
     }
+
+    return async function search(query) {
+      try {
+        const engine = await init();
+        const res = await engine.debouncedSearch(query, {}, 0);
+        // null = superseded -> unveraendert durchreichen; gat-search ignoriert es.
+        if (res == null) return null;
+
+        const hits = res.results.slice(0, limit);
+        const data = await Promise.all(hits.map((r) => r.data()));
+        return data.map((d) => ({
+          id: d.url,
+          title: (d.meta && d.meta.title) || d.url,
+          // Pagefind liefert ein HTML-escapetes excerpt mit <mark> ->
+          // sicher fuer innerHTML im DS-Default-Renderer.
+          excerpt: d.excerpt,
+          url: d.url,
+          meta: d.meta,
+        }));
+      } catch (e) {
+        // Stiller Dev-Fallback: ohne `pagefind --site dist` fehlt das Bundle.
+        console.warn('Pagefind nicht verfuegbar (dev-Modus?):', e);
+        return [];
+      }
+    };
   }
-  init();
+
+  createSearch({
+    input: '#werkzeuge-search-input',
+    overlay: '#werkzeuge-search-overlay',
+    search: pagefindAdapter({ bundlePath: `${BASE}pagefind/` }),
+    labels: {
+      placeholder: 'Werkzeuge durchsuchen ...',
+      noResults: 'Keine Treffer.',
+      hint: 'Mindestens {n} Zeichen eingeben ...',
+      loading: 'Suche laeuft ...',
+      count: '{n} Treffer',
+    },
+  });
 </script>
