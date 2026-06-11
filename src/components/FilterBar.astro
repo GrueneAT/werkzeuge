@@ -1,6 +1,6 @@
 ---
 import { KATEGORIEN } from '../lib/kategorien';
-import { BEREICHE, HIGHLIGHT_BEREICHE } from '../lib/bereiche';
+import { BEREICHE } from '../lib/bereiche';
 import { bundeslandLabel } from '../lib/bundeslaender';
 
 interface Props {
@@ -22,7 +22,7 @@ const aktiveBereiche = bereiche.filter((id) => BEREICHE[id]);
   ersetzt die vorige Auswahl — keine Kombinationen, damit es nicht kompliziert
   wird. Jeder Chip traegt seinen Facetten-Typ in data-facet.
 */}
-<div class="filter-bar" data-filter-bar data-highlight-bereiche={HIGHLIGHT_BEREICHE.join(',')}>
+<div class="filter-bar" data-filter-bar>
   <span class="filter-bar__label">Ansicht:</span>
   <div class="filter-bar__group">
     <button class="filter-chip" type="button" data-facet="highlights" data-value="" aria-pressed="true">Highlights</button>
@@ -67,8 +67,6 @@ const aktiveBereiche = bereiche.filter((id) => BEREICHE[id]);
   (function () {
     const bar = document.querySelector('[data-filter-bar]') as HTMLElement | null;
     if (!bar) return;
-    const highlightBereiche = (bar.dataset.highlightBereiche || '').split(',').filter(Boolean);
-
     // Genau ein aktiver Filter (Facette + Wert). Default: Highlights.
     const state = { facet: 'highlights', value: '' };
 
@@ -83,7 +81,9 @@ const aktiveBereiche = bereiche.filter((id) => BEREICHE[id]);
         let show = true;
         switch (state.facet) {
           case 'highlights':
-            show = highlightBereiche.includes(bereich);
+            // Per-Tool-Override (data-highlight) sticht den bereichsbasierten
+            // Default; die Card hat das bereits aufgeloest.
+            show = el.dataset.highlight === 'true';
             break;
           case 'all':
             show = true;

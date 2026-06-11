@@ -5,7 +5,7 @@ import WerkzeugCard from '../components/WerkzeugCard.astro';
 import FilterBar from '../components/FilterBar.astro';
 import Suche from '../components/Suche.astro';
 import CtaVorschlag from '../components/CtaVorschlag.astro';
-import { bereichOrder, HIGHLIGHT_BEREICHE } from '../lib/bereiche';
+import { bereichOrder, istHighlightEintrag } from '../lib/bereiche';
 import { BUNDESLAND_IDS } from '../lib/bundeslaender';
 
 const all = await getCollection('werkzeuge');
@@ -36,7 +36,7 @@ const vorhandeneBundeslaender = BUNDESLAND_IDS.filter((code) =>
   all.some((e) => (e.data.bundesland ?? []).includes(code)),
 );
 
-const highlightCount = all.filter((e) => HIGHLIGHT_BEREICHE.includes(e.data.bereich)).length;
+const highlightCount = all.filter((e) => istHighlightEintrag(e.data.bereich, e.data.highlight)).length;
 ---
 <Base title="Werkzeuge" description="Werkzeug-Verzeichnis fuer Gruene-Gemeindegruppen — Standardtools, eigene Tools und kuratierte Empfehlungen, filterbar nach Bereich, Kategorie und Bundesland.">
   <section class="werkzeuge-hero">

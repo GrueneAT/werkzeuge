@@ -13,6 +13,11 @@ const werkzeuge = defineCollection({
     // Gruppierung/Sortierung auf der Startseite. Standardtools + eigene
     // Werkzeuge bilden das Default-"Highlights"-Set; siehe lib/bereiche.ts.
     bereich: z.enum(['standardtools', 'eigene-tools', 'admin', 'bundesbuero', 'sonstiges']),
+    // Optionaler Per-Tool-Override fuer das "Highlights"-Default-Set. Ohne
+    // Angabe ergibt sich die Highlight-Zugehoerigkeit aus dem `bereich`
+    // (HIGHLIGHT_BEREICHE in lib/bereiche.ts). `true` erzwingt Aufnahme (z. B.
+    // ein kuratiertes Dritt-Tool), `false` nimmt ein Tool gezielt heraus.
+    highlight: z.boolean().optional(),
     // Bundesland-Codes fuer landesspezifische Tools (z. B. ['noe']). Leer =
     // bundesweit. Steuert den Bundesland-Filter (siehe lib/bundeslaender.ts).
     bundesland: z.array(z.string()).default([]),
