@@ -326,6 +326,17 @@ main.werkzeuge-main {
   margin-top: 1rem;
 }
 
+/* Such-Sektion auf der Startseite: das Suchfeld sitzt direkt unter dem Hero,
+   damit die Volltextsuche der erste Einstieg ist (kein eigener Such-Tab). */
+.werkzeuge-suche {
+  margin: 1.5rem 0 1rem;
+  scroll-margin-top: 1rem;
+}
+.werkzeuge-suche .suche-wrap {
+  max-width: 38rem;
+  margin-top: 0;
+}
+
 /* Such-Index nach Build: die Pagefind-UI generiert eigene Klassen,
    wir setzen nur ein paar Variablen, damit die Farben zur DS passen. */
 :root {

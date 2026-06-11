@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import WerkzeugCard from '../components/WerkzeugCard.astro';
 import FilterBar from '../components/FilterBar.astro';
+import Suche from '../components/Suche.astro';
 import CtaVorschlag from '../components/CtaVorschlag.astro';
 import { bereichOrder, HIGHLIGHT_BEREICHE } from '../lib/bereiche';
 import { BUNDESLAND_IDS } from '../lib/bundeslaender';
@@ -50,7 +51,11 @@ const highlightCount = all.filter((e) => HIGHLIGHT_BEREICHE.includes(e.data.bere
     </p>
   </section>
 
-  <p>{highlightCount} Highlights von {all.length} Werkzeugen. Filtere nach Bereich, Kategorie{vorhandeneBundeslaender.length > 0 ? ' oder Bundesland' : ''}.</p>
+  <section class="werkzeuge-suche" id="suche" aria-label="Werkzeuge durchsuchen">
+    <Suche />
+  </section>
+
+  <p>{highlightCount} Highlights von {all.length} Werkzeugen. Filtere nach Bereich, Kategorie{vorhandeneBundeslaender.length > 0 ? ' oder Bundesland' : ''} — oder durchsuche oben Namen, Beschreibung und Kategorien.</p>
 
   <FilterBar counts={counts} bereiche={vorhandeneBereiche} bundeslaender={vorhandeneBundeslaender} />
 

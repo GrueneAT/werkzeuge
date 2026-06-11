@@ -51,37 +51,45 @@ const lastVerified = d.last_verified instanceof Date
       </div>
     </header>
 
-    <dl class="werkzeug-meta-tabelle" data-pagefind-ignore>
-      <dt>Kategorien</dt>
+    {/*
+      Volltextsuche (Pagefind): nur die fachlich suchbaren Werte — Kategorien
+      und Tags — werden indexiert. Die `dt`-Labels und die rein technischen
+      Zeilen (Wartung, Hosting, Lizenz, ...) tragen `data-pagefind-ignore`,
+      damit sie nicht als Treffer-Rauschen in der Suche auftauchen. Der
+      Werkzeug-Name steckt bereits in der `h1` + `data-pagefind-meta`, die
+      Beschreibung im Markdown-Body unten.
+    */}
+    <dl class="werkzeug-meta-tabelle">
+      <dt data-pagefind-ignore>Kategorien</dt>
       <dd>{d.categories.map((c, i) => (
         <>
           <a href={`${import.meta.env.BASE_URL}kategorie/${c}/`}>{kategorieLabel(c)}</a>{i < d.categories.length - 1 ? ', ' : ''}
         </>
       ))}</dd>
 
-      <dt>Zielgruppe</dt>
-      <dd>{d.audience.join(', ')}</dd>
+      <dt data-pagefind-ignore>Zielgruppe</dt>
+      <dd data-pagefind-ignore>{d.audience.join(', ')}</dd>
 
-      <dt>Tags</dt>
+      <dt data-pagefind-ignore>Tags</dt>
       <dd>{d.tags.join(', ')}</dd>
 
-      <dt>Wartung</dt>
-      <dd>{d.maintained_by}</dd>
+      <dt data-pagefind-ignore>Wartung</dt>
+      <dd data-pagefind-ignore>{d.maintained_by}</dd>
 
-      <dt>Hosting</dt>
-      <dd>{d.hosted_by}</dd>
+      <dt data-pagefind-ignore>Hosting</dt>
+      <dd data-pagefind-ignore>{d.hosted_by}</dd>
 
-      <dt>Lizenz</dt>
-      <dd>{d.license}</dd>
+      <dt data-pagefind-ignore>Lizenz</dt>
+      <dd data-pagefind-ignore>{d.license}</dd>
 
-      <dt>Sprache</dt>
-      <dd>{d.language}</dd>
+      <dt data-pagefind-ignore>Sprache</dt>
+      <dd data-pagefind-ignore>{d.language}</dd>
 
-      <dt>Status</dt>
-      <dd>{d.status}</dd>
+      <dt data-pagefind-ignore>Status</dt>
+      <dd data-pagefind-ignore>{d.status}</dd>
 
-      <dt>Geprueft</dt>
-      <dd>{lastVerified}</dd>
+      <dt data-pagefind-ignore>Geprueft</dt>
+      <dd data-pagefind-ignore>{lastVerified}</dd>
     </dl>
 
     <div class="werkzeug-body">
