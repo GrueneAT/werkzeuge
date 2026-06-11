@@ -337,18 +337,6 @@ main.werkzeuge-main {
   margin-top: 0;
 }
 
-/* Such-Index nach Build: die Pagefind-UI generiert eigene Klassen,
-   wir setzen nur ein paar Variablen, damit die Farben zur DS passen. */
-:root {
-  --pagefind-ui-primary: var(--gat-color-dunkelgruen, #005538);
-  --pagefind-ui-text:    var(--gat-web-text, #1f1f1f);
-  --pagefind-ui-background: #fff;
-  --pagefind-ui-border:  var(--gat-web-border, #e4e0d8);
-  --pagefind-ui-tag:     var(--gat-web-bg, #f7f5f0);
-  --pagefind-ui-border-radius: 8px;
-  --pagefind-ui-font: system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-
 /* Header-Anpassung: Werkzeuge-Site nutzt --kompakt */
 .gat-header__nav-list a {
   color: inherit;
