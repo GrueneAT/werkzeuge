@@ -30,3 +30,9 @@ export const HIGHLIGHT_BEREICHE = ['standardtools', 'eigene-tools'];
 export function istHighlight(bereich: string): boolean {
   return HIGHLIGHT_BEREICHE.includes(bereich);
 }
+
+// Highlight-Zugehoerigkeit eines konkreten Werkzeugs: der optionale Per-Tool-
+// Override (`highlight` im Frontmatter) sticht den bereichsbasierten Default.
+export function istHighlightEintrag(bereich: string, override?: boolean): boolean {
+  return override ?? istHighlight(bereich);
+}

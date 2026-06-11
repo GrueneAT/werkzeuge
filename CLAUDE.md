@@ -33,6 +33,7 @@ Jedes Werkzeug = `src/content/werkzeuge/<slug>.md`. Schema:
 {
   title, slug, url, source?, own_tool, status,
   bereich,                    // 'standardtools' | 'eigene-tools' | 'admin' | 'bundesbuero' | 'sonstiges' (lib/bereiche.ts)
+  highlight?,                 // optionaler Per-Tool-Override fuer das Highlights-Set (true=rein, false=raus); ohne Angabe entscheidet bereich
   bundesland: string[],       // BL-Codes (z. B. ['noe']); leer = bundesweit (lib/bundeslaender.ts)
   maintained_by, hosted_by, license, language,
   categories: string[], audience: string[], tags: string[],
@@ -42,7 +43,8 @@ Jedes Werkzeug = `src/content/werkzeuge/<slug>.md`. Schema:
 ```
 
 **Startseite (`/`)**: filterbare Liste, Default = „Highlights" (Standardtools +
-eigene Werkzeuge); Filter nach Bereich, Kategorie und — wenn landesspezifische
+eigene Werkzeuge, sofern nicht per `highlight:`-Override im Frontmatter gezielt
+ein-/ausgeschlossen); Filter nach Bereich, Kategorie und — wenn landesspezifische
 Tools existieren — Bundesland. Eigene (Gruene-betriebene) Tools tragen einen
 gruenen Farb-Akzent statt eines Eigen/Dritt-Filters. `/verzeichnis/` = nach
 Bereich gruppierte Detail-Index-Seite.

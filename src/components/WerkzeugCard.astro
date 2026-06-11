@@ -1,5 +1,6 @@
 ---
 import { kategorieLabel } from '../lib/kategorien';
+import { istHighlightEintrag } from '../lib/bereiche';
 
 interface Props {
   entry: {
@@ -9,6 +10,7 @@ interface Props {
       slug: string;
       own_tool: boolean;
       bereich: string;
+      highlight?: boolean;
       bundesland: string[];
       status: string;
       categories: string[];
@@ -23,6 +25,7 @@ interface Props {
 const { entry, variant = 'default' } = Astro.props as Props;
 const BASE = import.meta.env.BASE_URL;
 const href = `${BASE}werkzeug/${entry.data.slug}/`;
+const istHighlight = istHighlightEintrag(entry.data.bereich, entry.data.highlight);
 
 // 1-Zeilen-Beschreibung: erster non-blank Paragraph aus dem Markdown-Body,
 // auf ~160 Zeichen gekuerzt.
@@ -35,7 +38,7 @@ const firstPara = rawBody
 const stripped = firstPara.replace(/\*\*/g, '').replace(/\n+/g, ' ').replace(/`([^`]+)`/g, '$1');
 const shortDesc = stripped.length > 180 ? stripped.slice(0, 177) + '...' : stripped;
 ---
-<a class="werkzeug-card" href={href} data-own-tool={String(entry.data.own_tool)} data-bereich={entry.data.bereich} data-bundesland={(entry.data.bundesland ?? []).join(',')} data-categories={entry.data.categories.join(',')}>
+<a class="werkzeug-card" href={href} data-own-tool={String(entry.data.own_tool)} data-bereich={entry.data.bereich} data-highlight={String(istHighlight)} data-bundesland={(entry.data.bundesland ?? []).join(',')} data-categories={entry.data.categories.join(',')}>
   <div class="werkzeug-card__top">
     <h3 class="werkzeug-card__title">{entry.data.title}</h3>
     {entry.data.own_tool
