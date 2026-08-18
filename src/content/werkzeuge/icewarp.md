@@ -1,16 +1,16 @@
 ---
-title: IceWarp (Groupware-Vorschau)
+title: Groupware (IceWarp)
 slug: icewarp
 url: https://www.icewarp.com/preview-epos/start/
 source: null
-own_tool: false
-bereich: sonstiges
+own_tool: true
+bereich: standardtools
 bundesland: []
 status: beta
-maintained_by: IceWarp
+maintained_by: Grüne Bundespartei – Bundesbüro IT
 hosted_by: IceWarp (Anbieter)
 license: proprietär (IceWarp)
-language: en
+language: de
 categories:
   - kollaboration
   - kommunikation
@@ -20,28 +20,38 @@ audience:
   - landesgruppe
   - mitarbeiter-in
 tags:
-  - groupware
   - e-mail
   - kalender
-  - vorschau
+  - kontakte
+  - groupware
   - icewarp
 related:
-  - groupware
-last_verified: 2026-06-10
+  - cloud
+  - listen
+last_verified: 2026-08-18
 ---
 
-**IceWarp** wird ab **Mitte August 2026** die neue Groupware der Grünen (Ablöse
-von Zimbra). Über die Anbieter-Vorschau lässt sich die Oberfläche schon jetzt
-ansehen.
+Die zentrale **E-Mail- und Kalender-Groupware** der Grünen: Postfach, Kalender,
+Kontakte und Aufgaben unter einer Oberfläche. IceWarp löst mit **September 2026**
+die bisherige Zimbra-Groupware ab.
+
+> **Hinweis:** Bis zur Umstellung führt der Link auf die **Anbieter-Vorschau**,
+> nicht auf euer Postfach. Die produktive Login-Adresse kommuniziert die
+> Bundesbüro-IT mit der Umstellung.
 
 ## Was macht das Werkzeug
-- E-Mail, Kalender, Kontakte, Dokumente in einer Web-Oberfläche
-- Künftige zentrale Groupware-Plattform der Grünen
+- Webmail mit Kalender, Kontakten und Aufgaben
+- Geteilte Kalender und Ressourcen im Team
+- Zugriff per Browser sowie über IMAP/CalDAV-fähige Clients
 
 ## Wann nutzen
-- Jetzt: Demo-Vorschau, um die neue Oberfläche kennenzulernen
-- Ab Mitte August 2026: produktive Groupware (Login folgt)
+- Tägliche dienstliche Kommunikation über die `@gruene.at`-Adresse
+- Termin- und Ressourcenkoordination im Team
 
-## Hinweis
-Der verlinkte Demo-Zugang ist eine **Vorschau des Anbieters**, kein
-produktiver Grüne-Zugang. Migrationsdetails kommuniziert die Bundesbüro-IT.
+## Zugang
+- Ab der Umstellung im September 2026 mit den Grüne-Zugangsdaten. Bei Problemen
+  hilft der IT-Helpdesk bzw. die zuständige Landes-Helpdesk-Adresse.
+
+## Hinweis zur Umstellung
+Die Migration von Zimbra betrifft Postfächer und Kalender. Details zum Zeitplan
+und zur neuen Login-Adresse kommuniziert die Bundesbüro-IT.

@@ -25,7 +25,7 @@ tags:
   - moderation
   - sympa
 related:
-  - groupware
+  - icewarp
 last_verified: 2026-06-10
 ---
 

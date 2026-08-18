@@ -24,7 +24,7 @@ tags:
   - zusammenarbeit
   - nextcloud
 related:
-  - groupware
+  - icewarp
   - listen
 last_verified: 2026-06-10
 ---
