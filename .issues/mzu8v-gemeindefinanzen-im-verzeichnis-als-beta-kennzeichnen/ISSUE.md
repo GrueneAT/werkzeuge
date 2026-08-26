@@ -1,7 +1,7 @@
 ---
 id: mzu8v
 title: Gemeindefinanzen im Verzeichnis als Beta kennzeichnen
-status: open
+status: done
 priority: medium
 labels:
 - documentation
