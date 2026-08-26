@@ -6,7 +6,7 @@ source: https://github.com/GrueneAT/gemeindefinanzen
 own_tool: true
 bereich: eigene-tools
 bundesland: []
-status: live
+status: beta
 maintained_by: GrueneAT
 hosted_by: GrueneAT (GitHub Pages)
 license: MIT
@@ -26,12 +26,12 @@ tags:
   - kommunalpolitik
 related:
   - vorlagen
-last_verified: 2026-05-24
+last_verified: 2026-08-26
 ---
 
+**Beta-Phase** — Rueckmeldungen an florian.motlik@gruene.at.
 Browserbasierte Analyse oesterreichischer Gemeindevoranschlaege und
-Rechnungsabschluesse nach **VRV 2015**. PDF wird clientseitig geparst,
-Daten verlassen den Browser nicht.
+Rechnungsabschluesse nach **VRV 2015**.
 
 ## Was macht das Werkzeug
 
