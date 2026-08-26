@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Provenance: SHA-256 of the source .md this page was generated from. -->
+<meta name="artifact-source-sha256" content="c8350fd15876cef386836fd1fbada025e33532e230528daccab069f5d306cb74">
+<meta name="artifact-source-file" content="PLAN.md">
+<meta name="artifact-generated-at" content="2026-08-26">
+<!-- Which version of the design system this page was authored against. -->
+<meta name="design-system-version" content="ds-1">
+<title>Plan: Gemeindefinanzen im Verzeichnis als Beta kennzeichnen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://flomotlik.github.io/claude-code/design-system.css">
+</head>
+<body>
+<div class="page">
+
+<header class="row">
+  <div class="margin">
+    <p class="kicker"><span class="kicker-num">00</span>Plan</p>
+  </div>
+  <div class="body">
+    <h1 class="masthead-title">Gemeindefinanzen im Verzeichnis als Beta kennzeichnen</h1>
+    <p class="masthead-sub">Issue: mzu8v-gemeindefinanzen-im-verzeichnis-als-beta-kennzeichnen &middot; Generated 2026-08-26</p>
+  </div>
+</header>
+
+<hr class="rule">
+
+<section class="row" id="strategy">
+  <div class="margin">
+    <p class="kicker"><span class="kicker-num">01</span>Strategy</p>
+    <p class="margin-note">Zuerst lesen — der Rest ist Detail.</p>
+  </div>
+  <div class="body">
+    <h2>Strategy summary</h2>
+
+    <p>Der Eintrag wird im Verzeichnis als Beta gekennzeichnet — rein
+       deklarativ. <span class="mark mark-green"><code>status: beta</code> im
+       Frontmatter genuegt</span>, damit Karte und Detailseite das
+       <code>gat-tag--warn</code>-Label automatisch rendern. Kein Code, kein
+       Schema, keine neue Abhaengigkeit.</p>
+    <ul class="points">
+      <li class="point">
+        <p class="point-claim">Bestehende Struktur nutzen, nicht erweitern.</p>
+        <p class="point-detail"><code>status</code> wird im gesamten
+          <code>src/</code> nur an drei Stellen gelesen, immer als
+          <code>!== 'live'</code>. <code>icewarp</code> und
+          <code>personenwahl</code> stehen bereits auf <code>beta</code> und
+          rendern das Tag — Konsistenz ohne Codeaenderung.</p>
+      </li>
+      <li class="point is-risk">
+        <p class="point-claim">Der Fallstrick ist der Teaser, nicht der Status.</p>
+        <p class="point-detail">Die Karte baut ihren Text aus dem ersten Absatz
+          und kuerzt ab 180 Zeichen hart. Der heutige Absatz hat schon 169 —
+          ein angehaengter Beta-Satz waere abgeschnitten, also genau das
+          Gegenteil des Issue-Ziels.</p>
+      </li>
+      <li class="point is-note">
+        <p class="point-claim">Beta-Satz nach vorne, Absatz straffen.</p>
+        <p class="point-detail">Fuehrender Satz im selben Absatz, E-Mail als
+          Klartext, Zielwert 160 Zeichen — dann steht der Hinweis ungekuerzt
+          auf jeder Karte.</p>
+      </li>
+      <li class="point is-note">
+        <p class="point-claim">Zweistufige Verifikation.</p>
+        <p class="point-detail">Erst eine Teaser-Simulation auf dem Quelltext
+          (schnell, kein Build), dann der echte Build plus Pruefung des
+          gerenderten <code>dist/</code>.</p>
+      </li>
+    </ul>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">2</div>
+        <div class="stat-label">Tasks</div></div>
+      <div class="stat"><div class="stat-num is-green">1</div>
+        <div class="stat-label">Geaenderte Datei</div></div>
+      <div class="stat"><div class="stat-num">160</div>
+        <div class="stat-label">Zeichen Absatz 1 (max 180)</div></div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="row" id="flow">
+  <div class="margin">
+    <p class="kicker"><span class="kicker-num">02</span>Flow</p>
+  </div>
+  <div class="body">
+    <h2>Task flow &amp; dependencies</h2>
+
+    <div class="flow">
+      <div class="flow-node is-foundation is-key">
+        <span class="n">Task 1</span>
+        <span class="t">Frontmatter auf beta setzen und Beta-Hinweis in Absatz 1 einbauen</span>
+        <span class="d">status: beta, last_verified: 2026-08-26, Absatz 1 neu formuliert — geprueft per Teaser-Simulation.</span>
+      </div>
+      <div class="flow-node">
+        <span class="n">Task 2</span>
+        <span class="t">Build ausfuehren und gerendertes Beta-Tag in dist/ verifizieren</span>
+        <span class="d">pnpm run build, dann Warn-Tag auf Karte und Detailseite plus ungekuerzter Teaser pruefen.</span>
+      </div>
+    </div>
+    <p>Streng sequenziell: Task 2 verifiziert das Ergebnis von Task 1 am
+       gebauten HTML und deckt zugleich das Akzeptanzkriterium
+       <code>pnpm run build</code> ab.</p>
+
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="row" id="decisions">
+  <div class="margin">
+    <p class="kicker"><span class="kicker-num">03</span>Decisions</p>
+  </div>
+  <div class="body">
+    <h2>Key decisions &amp; options</h2>
+
+    <div class="decision">
+      <div class="decision-head">
+        <p class="decision-title">Wo der Beta-Hinweis im Text steht</p>
+        <span class="lozenge is-chosen">Gewaehlt</span>
+      </div>
+      <p class="decision-body">Als fuehrender Satz im bestehenden ersten
+        Absatz, der Absatz dabei auf 160 Zeichen gestrafft — der Hinweis steht
+        ungekuerzt auf jeder Karte und die Beschreibung bleibt erhalten.</p>
+      <p class="decision-body rejected">Hinten an Absatz 1 angehaengt — mit 226
+        Zeichen abgeschnitten, der Teaser endete bei „… Beta-Ph…".</p>
+      <p class="decision-body rejected">Als eigener Absatz vorangestellt —
+        wuerde als erster Absatz den kompletten Karten-Teaser ersetzen und die
+        Werkzeug-Beschreibung von allen Listenseiten verdraengen.</p>
+    </div>
+    <div class="decision">
+      <div class="decision-head">
+        <p class="decision-title">Darstellung der Support-Adresse</p>
+        <span class="lozenge is-chosen">Gewaehlt</span>
+      </div>
+      <p class="decision-body">Klartext <code>florian.motlik@gruene.at</code>
+        in Absatz 1.</p>
+      <p class="decision-body rejected">Ein Markdown-<code>mailto:</code>-Link
+        — die Teaser-Strip-Kette entfernt nur <code>**</code> und Backticks,
+        die Link-Syntax landete als roher Quelltext auf der Karte.</p>
+    </div>
+    <div class="decision">
+      <div class="decision-head">
+        <p class="decision-title">Beschriftung des Status-Tags</p>
+        <span class="lozenge is-note">Ausser Scope</span>
+      </div>
+      <p class="decision-body">Der rohe Enum-Wert <code>beta</code> bleibt, wie
+        er ist.</p>
+      <p class="decision-body rejected">Eine Label-Map <code>beta</code> &rarr;
+        „Beta" in einer <code>lib/status.ts</code> — waere kosmetisch schoener,
+        erfordert aber Aenderungen an <code>WerkzeugCard.astro</code>
+        <em>und</em> <code>[slug].astro</code>. ISSUE.md schliesst
+        Komponenten-Umbauten aus; ggf. eigenes Issue.</p>
+    </div>
+    <div class="decision">
+      <div class="decision-head">
+        <p class="decision-title">Verifikationskommando</p>
+        <span class="lozenge is-chosen">Gewaehlt</span>
+      </div>
+      <p class="decision-body"><code>NODE_ENV= pnpm install --prod=false</code>
+        vor dem Build — im Container ist <code>NODE_ENV=production</code>
+        gesetzt, sonst fehlt <code>pagefind</code> und der
+        <code>postbuild</code>-Hook bricht ab.</p>
+      <p class="decision-body rejected"><code>pnpm run check</code>
+        (<code>astro check</code>) — <code>@astrojs/check</code> und
+        <code>typescript</code> sind nicht installiert und wuerden einen
+        interaktiven Install ausloesen.</p>
+    </div>
+
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="row" id="detail">
+  <div class="margin">
+    <p class="kicker"><span class="kicker-num">04</span>Detail</p>
+  </div>
+  <div class="body">
+    <h2>Full detail</h2>
+    <details class="detail">
+      <summary>Show full artifact source
+        <span class="summary-hint">click to expand</span></summary>
+      <div class="detail-body">
+        <pre><code id="artifact-source-target"></code></pre>
+      </div>
+    </details>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="row" id="provenance">
+  <div class="margin">
+    <p class="kicker"><span class="kicker-num">05</span>Provenance</p>
+  </div>
+  <div class="body">
+    <h2>Provenance</h2>
+    <p>Generated from the canonical <code>.md</code>. This HTML is never
+       hand-edited — if the <code>.md</code> changes, regenerate with
+       <code>/issue:view</code>.</p>
+    <footer class="footer">
+      <span>Source: <code>PLAN.md</code> &middot;
+        SHA-256 <code>c8350fd15876cef386836fd1fbada025e33532e230528daccab069f5d306cb74</code></span>
+      <span>Generated 2026-08-26 &middot; design system ds-1</span>
+    </footer>
+  </div>
+</section>
+
+</div>
+
+<!-- Raw artifact source as DATA, never markup. -->
+<script type="application/json" id="artifact-source">
+{"source": "# Plan: Gemeindefinanzen im Verzeichnis als Beta kennzeichnen\n\n<objective>\nWas dieser Plan erreicht: Der Eintrag `src/content/werkzeuge/gemeindefinanzen.md`\nsteht auf `status: beta`, und der Beta-Hinweis samt Support-Adresse\n(`florian.motlik@gruene.at`) steht im ersten Absatz der Beschreibung — sodass\ndas Warn-Tag „beta\" auf Karte und Detailseite erscheint und der Beta-Hinweis\nungekuerzt im Karten-Teaser sichtbar ist.\n\nWarum das zaehlt: Das Gemeindefinanzen-Werkzeug ist noch Beta, stand im\nVerzeichnis aber auf `live`. Im Verzeichnis — der Stelle, an der man das\nWerkzeug zuerst sieht — war der Beta-Stand damit nirgends erkennbar.\n\nScope:\n- IN: genau eine Datei, `src/content/werkzeuge/gemeindefinanzen.md`\n  (Frontmatter `status` + `last_verified`, Absatz 1 neu formuliert).\n- OUT: `WerkzeugCard.astro`, `src/pages/werkzeug/[slug].astro`,\n  `src/content.config.ts` — alle drei bleiben unberuehrt (Constraint aus\n  ISSUE.md: „Nur Content-/Frontmatter-Aenderung, keine Komponenten-Umbauten\").\n- OUT: das Gegenstueck im Repo `gemeindefinanzen` (Beta-Hinweis in Ueberschrift\n  + Hinweis beim Oeffnen) — eigenes Issue, hier nicht anfassen.\n- OUT: eine Status-Label-Map (`beta` -> „Beta\") in einer `lib/status.ts` — waere\n  ein Komponenten-Umbau und ist explizit ausgeschlossen.\n\nKeine CONTEXT.md vorhanden — es gab keine `issue:discuss`-Runde. Verbindlich\nsind ausschliesslich die Vorgaben aus ISSUE.md; die Formulierung des\nBeta-Satzes und das konkrete `last_verified`-Datum liegen laut RESEARCH.md in\nClaude's Discretion und sind unten festgeschrieben.\n</objective>\n\n<strategy>\nDie Aenderung ist rein deklarativ. `status` wird im gesamten `src/` nur an drei\nStellen gelesen, immer als simpler `!== 'live'`-Vergleich — es gibt keine\nFilterung, Sortierung oder Gruppierung nach Status. `status: beta` im\nFrontmatter genuegt also, damit Karte und Detailseite das\n`gat-tag--warn`-Label automatisch rendern; `icewarp` und `personenwahl` machen\ngenau das heute schon. Kein Code, kein Schema, keine neue Abhaengigkeit.\n\nDer einzige echte Fallstrick liegt beim Beschreibungstext, nicht beim Status:\n`WerkzeugCard.astro:31-38` baut den Karten-Teaser aus dem **ersten Absatz** des\nMarkdown-Bodys und kuerzt ihn ab 180 Zeichen hart auf 177 + `...`. Der heutige\nerste Absatz hat bereits 169 Zeichen. Daraus folgt die zentrale\nDesign-Entscheidung des Plans: der Beta-Hinweis wird als **fuehrender Satz in\ndenselben Absatz** gesetzt und der Absatz dabei gestrafft (Zielwert 160\nZeichen), statt angehaengt (waere abgeschnitten) oder als eigener Absatz\nvorangestellt (wuerde die Werkzeug-Beschreibung komplett vom Teaser\nverdraengen). Die E-Mail steht als Klartext, nicht als Markdown-Link — die\nTeaser-Strip-Kette entfernt nur `**` und `` `code` ``, ein `[…](mailto:…)`\nlandet als roher Quelltext auf der Karte.\n\nDer Plan ist deshalb bewusst zweistufig: Task 1 macht die Quelltext-Aenderung\nund prueft sie mit einer 1:1 aus `WerkzeugCard.astro` nachgebauten\nTeaser-Simulation (schnelles Gate, kein Build noetig). Task 2 baut die Site und\nprueft das **gerenderte** Ergebnis in `dist/` — Warn-Tag auf Karte und\nDetailseite, Beta-Hinweis ungekuerzt im Teaser. Das ist zugleich das\nAkzeptanzkriterium „`pnpm run build` laeuft durch\".\n</strategy>\n\n<context>\nIssue: @.issues/mzu8v-gemeindefinanzen-im-verzeichnis-als-beta-kennzeichnen/ISSUE.md\nResearch: @.issues/mzu8v-gemeindefinanzen-im-verzeichnis-als-beta-kennzeichnen/RESEARCH.md\n\nKeine `.claude/skills/` im Repo — kein Skill-Block.\nKeine CLI-Oberflaeche betroffen (reine Content-Aenderung) — keine\nCall-Site-Enumeration noetig.\n\n<interfaces>\n<!-- Executor: nutze diese Contracts direkt. Den Code NICHT nachschlagen und NICHT aendern. -->\n\n// Aus src/content.config.ts — Zod-Schema der Collection `werkzeuge`\n// (nur die fuer dieses Issue relevanten Felder)\nstatus: z.enum(['live', 'beta', 'unreleased', 'unmaintained'])   // 'beta' ist bereits gueltig — KEIN Schema-Change\nlast_verified: z.date()                                          // YAML-Datum unquoted: 2026-08-26\n\n// Aus src/components/WerkzeugCard.astro:31-38 — Teaser-Ableitung (LOAD-BEARING)\n// Der Karten-Text ist der ERSTE nicht-leere Absatz des Markdown-Bodys.\nconst rawBody = (entry as any).body ?? '';\nconst firstPara = rawBody\n  .split(/\\n{2,}/)\n  .map((p: string) => p.trim())\n  .find((p: string) => p && !p.startsWith('#') && !p.startsWith('---'))\n  ?? '';\nconst stripped = firstPara.replace(/\\*\\*/g, '').replace(/\\n+/g, ' ').replace(/`([^`]+)`/g, '$1');\nconst shortDesc = stripped.length > 180 ? stripped.slice(0, 177) + '...' : stripped;\n// -> strippt NUR ** und `code`; Markdown-Links bleiben als Rohtext stehen.\n\n// Aus src/components/WerkzeugCard.astro:54-55 — Status-Tag auf der Karte\n{entry.data.status !== 'live' && (\n  <span class=\"gat-tag gat-tag--warn\">{entry.data.status}</span>\n)}\n\n// Aus src/pages/werkzeug/[slug].astro:39 — Status-Tag im Detail-Header\n{d.status !== 'live' && <span class=\"gat-tag gat-tag--warn\">{d.status}</span>}\n</interfaces>\n\nKey files:\n@src/content/werkzeuge/gemeindefinanzen.md — die einzige zu aendernde Datei\n@src/components/WerkzeugCard.astro — NUR lesen/verstehen, nicht aendern (Teaser + Warn-Tag)\n@src/pages/werkzeug/[slug].astro — NUR lesen/verstehen, nicht aendern (Warn-Tag)\n\nUmgebungs-Hinweis (verifiziert): Im Container ist `NODE_ENV=production` gesetzt.\n`pnpm install` ueberspringt dann devDependencies, und `pnpm run build` bricht im\n`postbuild`-Hook mit `sh: 1: pagefind: not found` ab. Deshalb IMMER\n`NODE_ENV= pnpm install --prod=false` vor dem Build. In GitHub Actions tritt das\nnicht auf.\n</context>\n\n<commit_format>\nFormat: conventional mit Issue-Prefix (aus `.issues/config.yaml`:\n`format: conventional`, `prefix: true`)\nBeispiel: `mzu8v: docs(content): mark gemeindefinanzen as beta`\nPattern: `{issue-id}: {type}({scope}): {description}`\nCommit-Betreff auf Englisch, Content-Text auf Deutsch. Keine Werkzeug-Attribution\n(kein „Generated with\", kein `Co-Authored-By`). Atomarer Commit — eine Datei.\n</commit_format>\n\n<tasks>\n\n<task type=\"auto\">\n  <name>Task 1: Frontmatter auf beta setzen und Beta-Hinweis in Absatz 1 einbauen</name>\n  <files>src/content/werkzeuge/gemeindefinanzen.md</files>\n  <action>\n  Genau drei Aenderungen in `src/content/werkzeuge/gemeindefinanzen.md`, sonst nichts.\n  `title`, `slug`, `url`, `source`, `bereich`, `bundesland`, `categories`, `tags`,\n  `related` und alle uebrigen Frontmatter-Felder bleiben unveraendert (Konsumenten-URLs\n  sind laut CLAUDE.md Vertrag).\n\n  1. Frontmatter: `status: live` -> `status: beta`.\n     Ohne Anfuehrungszeichen, klein geschrieben. `\"Beta\"` oder `Beta` bricht das\n     Zod-Enum und laesst den Build fehlschlagen.\n\n  2. Frontmatter: `last_verified: 2026-05-24` -> `last_verified: 2026-08-26`.\n     Unquoted ISO-Datum, wie in allen anderen Content-Dateien.\n\n  3. Ersten Absatz des Bodys komplett ersetzen. Aktuell (direkt nach dem\n     schliessenden `---`, drei Zeilen):\n\n         Browserbasierte Analyse oesterreichischer Gemeindevoranschlaege und\n         Rechnungsabschluesse nach **VRV 2015**. PDF wird clientseitig geparst,\n         Daten verlassen den Browser nicht.\n\n     Neu — exakt dieser Wortlaut und dieser Zeilenumbruch:\n\n         **Beta-Phase** — Rueckmeldungen an florian.motlik@gruene.at.\n         Browserbasierte Analyse oesterreichischer Gemeindevoranschlaege und\n         Rechnungsabschluesse nach **VRV 2015**.\n\n  Warum genau so (nicht \"verbessern\"):\n  - Der Beta-Satz steht VORNE im selben Absatz. Angehaengt waere er auf der Karte\n    abgeschnitten (verifiziert: Teaser endete bei „… Beta-Ph…\"), als eigener\n    vorangestellter Absatz wuerde er den kompletten Karten-Teaser ersetzen und\n    die Werkzeug-Beschreibung von allen Listenseiten verdraengen.\n  - Der Absatz misst nach dem Strippen der `**` exakt 160 Zeichen und bleibt\n    damit unter der 180-Zeichen-Kuerzungsgrenze aus `WerkzeugCard.astro:38`.\n  - Die E-Mail steht als KLARTEXT. Kein `[florian.motlik@gruene.at](mailto:...)`\n    und kein sonstiger Markdown-Link in Absatz 1 — die Strip-Kette entfernt keine\n    Link-Syntax, der Rohtext mit eckigen Klammern landete auf der Karte.\n  - Der weggefallene Halbsatz „PDF wird clientseitig geparst, Daten verlassen den\n    Browser nicht.\" ist kein Verlust: die bestehende `## Datenschutz`-Sektion\n    deckt das ab. Sie NICHT anfassen und den Satz NICHT anderswo wieder einfuegen.\n  - Schreibweise: die Datei ist durchgaengig ASCII-transliteriert\n    (`oesterreichischer`, `Rueckmeldungen`). Keine echten Umlaute einmischen.\n    Das `—` ist ein Geviertstrich (U+2014), wie sonst in der Datei auch.\n\n  Alle uebrigen Absaetze und Sektionen (`## Was macht das Werkzeug`,\n  `## Wann nutzen`, `## Wann NICHT nutzen`, `## Datenschutz`,\n  `## Lizenz & Kosten`) bleiben unveraendert. Keine weitere Datei anfassen.\n  </action>\n  <verify>\n  <automated>\npython3 - <<'PY'\nimport re, sys\np = \"src/content/werkzeuge/gemeindefinanzen.md\"\nraw = open(p, encoding=\"utf-8\").read()\nfm, body = re.match(r\"^---\\n(.*?)\\n---\\n(.*)$\", raw, re.S).groups()\nfail = []\nif not re.search(r\"^status: beta$\", fm, re.M):\n    fail.append(\"frontmatter: status ist nicht 'beta'\")\nif not re.search(r\"^last_verified: 2026-08-26$\", fm, re.M):\n    fail.append(\"frontmatter: last_verified ist nicht 2026-08-26\")\n# Teaser-Logik 1:1 aus WerkzeugCard.astro:31-38\npara = next((s.strip() for s in re.split(r\"\\n{2,}\", body)\n             if s.strip() and not s.strip().startswith(\"#\")\n             and not s.strip().startswith(\"---\")), \"\")\nteaser = re.sub(r\"`([^`]+)`\", r\"\\1\", para.replace(\"**\", \"\").replace(\"\\n\", \" \"))\nif len(teaser) > 180:\n    fail.append(f\"Absatz 1 ist {len(teaser)} Zeichen -> Karten-Teaser wird gekuerzt (max 180)\")\nif \"Beta\" not in teaser:\n    fail.append(\"Absatz 1 enthaelt keinen Beta-Hinweis\")\nif \"florian.motlik@gruene.at\" not in teaser:\n    fail.append(\"Absatz 1 nennt die Support-Adresse nicht\")\nif \"[\" in para or \"](\" in para:\n    fail.append(\"Absatz 1 enthaelt Markdown-Link -> landet als Rohtext auf der Karte\")\nprint(f\"Teaser ({len(teaser)} Zeichen): {teaser}\")\nif fail:\n    print(\"FAIL:\")\n    for f in fail:\n        print(\"  -\", f)\n    sys.exit(1)\nprint(\"TASK 1 OK\")\nPY\n  </automated>\n  </verify>\n  <done>\n  - `status: beta` und `last_verified: 2026-08-26` stehen im Frontmatter\n  - Absatz 1 beginnt mit dem Beta-Hinweis und nennt `florian.motlik@gruene.at` als Klartext\n  - Absatz 1 misst nach dem Strippen 160 Zeichen (< 180) — Teaser wird nicht gekuerzt\n  - Kein Markdown-Link in Absatz 1\n  - Kein anderes Frontmatter-Feld und keine andere Datei veraendert\n  - Das Verify-Skript gibt `TASK 1 OK` aus und beendet mit Exit 0\n  </done>\n</task>\n\n<task type=\"auto\">\n  <name>Task 2: Build ausfuehren und gerendertes Beta-Tag in dist/ verifizieren</name>\n  <files>src/content/werkzeuge/gemeindefinanzen.md</files>\n  <action>\n  Keine Quelltext-Aenderung in diesem Task — hier wird die Wirkung von Task 1\n  gebaut und am gerenderten HTML geprueft. Das ist zugleich das Akzeptanzkriterium\n  „`pnpm run build` laeuft durch\".\n\n  1. Abhaengigkeiten inklusive devDependencies installieren:\n     `NODE_ENV= pnpm install --prod=false`\n     Das fuehrende `NODE_ENV=` ist zwingend — mit dem im Container gesetzten\n     `NODE_ENV=production` ueberspringt pnpm devDependencies, `pagefind` fehlt und\n     der `postbuild`-Hook bricht mit `sh: 1: pagefind: not found` ab.\n  2. `NODE_ENV= pnpm run build` — Astro baut nach `dist/`, der `postbuild`-Hook\n     indexiert mit Pagefind. Dabei validiert Astro auch das Zod-Schema der\n     Content-Collection; ein ungueltiger `status` faellt hier auf.\n  3. Das Ergebnis in `dist/` pruefen (macht das Verify-Skript automatisch):\n     - `dist/index.html`: die Gemeindefinanzen-Karte traegt\n       `<span class=\"gat-tag gat-tag--warn\">beta</span>`\n     - der Karten-Teaser enthaelt „Beta\" und endet NICHT auf `...`\n     - `dist/werkzeug/gemeindefinanzen/index.html`: Warn-Tag im Detail-Header\n\n  Falls das Verify-Skript die Karte nicht findet (`Karte ... nicht gefunden`),\n  liegt das an geaendertem Markup, nicht an einem Content-Fehler — dann in\n  `dist/index.html` nach `werkzeug/gemeindefinanzen/` greppen und die drei\n  Merkmale von Hand bestaetigen. NICHT `WerkzeugCard.astro` anpassen.\n\n  `dist/`, `node_modules/`, `.astro/` und `.pagefind/` sind in `.gitignore` —\n  Build-Artefakte gehoeren nicht in den Commit.\n  </action>\n  <verify>\n  <automated>\nNODE_ENV= pnpm install --prod=false && NODE_ENV= pnpm run build && python3 - <<'PY'\nimport re, sys\nfail = []\nidx = open(\"dist/index.html\", encoding=\"utf-8\").read()\nm = re.search(\n    r'<a class=\"werkzeug-card\"[^>]*href=\"[^\"]*werkzeug/gemeindefinanzen/\"[^>]*>(.*?)</a>',\n    idx, re.S)\nif not m:\n    fail.append(\"Gemeindefinanzen-Karte in dist/index.html nicht gefunden\")\nelse:\n    card = m.group(1)\n    if 'gat-tag gat-tag--warn\">beta<' not in card:\n        fail.append(\"Karte zeigt kein beta-Warn-Tag\")\n    d = re.search(r'<p class=\"werkzeug-card__desc\">(.*?)</p>', card, re.S)\n    if not d:\n        fail.append(\"Karte hat keinen Teaser\")\n    else:\n        desc = d.group(1).strip()\n        print(\"Karten-Teaser:\", desc)\n        if \"Beta\" not in desc:\n            fail.append(\"Beta-Hinweis fehlt im Karten-Teaser\")\n        if desc.endswith(\"...\"):\n            fail.append(\"Karten-Teaser wurde gekuerzt (endet auf '...')\")\n        if \"[\" in desc:\n            fail.append(\"Markdown-Link leakt als Rohtext in den Teaser\")\ndetail = open(\"dist/werkzeug/gemeindefinanzen/index.html\", encoding=\"utf-8\").read()\nif 'gat-tag gat-tag--warn\">beta<' not in detail:\n    fail.append(\"Detailseite zeigt kein beta-Warn-Tag\")\nif fail:\n    print(\"FAIL:\")\n    for f in fail:\n        print(\"  -\", f)\n    sys.exit(1)\nprint(\"TASK 2 OK\")\nPY\n  </automated>\n  </verify>\n  <done>\n  - `NODE_ENV= pnpm run build` laeuft ohne Fehler durch (Astro-Build + Pagefind-Index)\n  - `dist/index.html`: Gemeindefinanzen-Karte enthaelt `gat-tag gat-tag--warn\">beta`\n  - Karten-Teaser enthaelt „Beta\", endet nicht auf `...`, enthaelt keine `[`-Rohtext-Links\n  - `dist/werkzeug/gemeindefinanzen/index.html` enthaelt `gat-tag gat-tag--warn\">beta`\n  - Das Verify-Skript gibt `TASK 2 OK` aus und beendet mit Exit 0\n  - Keine Build-Artefakte im Commit (`dist/`, `node_modules/` sind gitignored)\n  </done>\n</task>\n\n</tasks>\n\n<verification>\nAbschluss-Checks nach allen Tasks:\n- `NODE_ENV= pnpm install --prod=false && NODE_ENV= pnpm run build` laeuft gruen durch\n- `git status --short` zeigt genau eine geaenderte Datei:\n  `src/content/werkzeuge/gemeindefinanzen.md` (plus die Issue-Artefakte unter\n  `.issues/`, falls `commit_artifacts` greift) — keine Aenderung an\n  `src/components/`, `src/pages/` oder `src/content.config.ts`\n- `git diff -- src/ | grep -c '^+++'` ergibt `1`\nEs gibt in diesem Repo keine Unit-Test-Suite und keinen Linter; `pnpm run check`\n(`astro check`) wird NICHT verwendet — `@astrojs/check` und `typescript` sind\nnicht installiert und wuerden einen interaktiven Install ausloesen.\n</verification>\n\n<success_criteria>\nBildet 1:1 die Akzeptanzkriterien aus ISSUE.md ab:\n- `status: beta` im Frontmatter, und das Beta-Tag erscheint gerendert sowohl auf\n  der Karte (`dist/index.html`) als auch auf der Detailseite\n  (`dist/werkzeug/gemeindefinanzen/index.html`)\n- Der Beta-Hinweis steht im ERSTEN Absatz der Beschreibung (nicht weiter unten)\n  und erscheint ungekuerzt im Karten-Teaser, inklusive Support-Adresse\n  `florian.motlik@gruene.at` als Klartext\n- `pnpm run build` laeuft durch (im Container: `NODE_ENV= pnpm run build`)\nZusaetzlich aus den Constraints:\n- `last_verified` ist auf `2026-08-26` aktualisiert\n- Nur Content-/Frontmatter-Aenderung — keine Komponenten-Datei angefasst\n- Conventional Commit mit Issue-Prefix, keine Werkzeug-Attribution\n</success_criteria>\n"}
+</script>
+
+<script>
+/* Report script — classic script only. No modules, no fetch, no imports. */
+(function () {
+  "use strict";
+  var dataEl = document.getElementById("artifact-source");
+  var target = document.getElementById("artifact-source-target");
+  if (dataEl && target) {
+    try {
+      target.textContent = JSON.parse(dataEl.textContent).source || "";
+    } catch (e) {
+      target.textContent = dataEl.textContent;
+    }
+  }
+  document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    a.addEventListener("click", function (ev) {
+      var el = document.getElementById(a.getAttribute("href").slice(1));
+      if (el) { ev.preventDefault(); el.scrollIntoView({ behavior: "smooth" }); }
+    });
+  });
+})();
+</script>
+</body>
+</html>
