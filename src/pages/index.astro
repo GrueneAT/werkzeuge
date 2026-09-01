@@ -44,9 +44,10 @@ const highlightCount = all.filter((e) => istHighlightEintrag(e.data.bereich, e.d
     <p>
       Standardtools, eigene Werkzeuge und kuratierte Empfehlungen fuer
       Gruene-Gemeindegruppen und kommunalpolitische Arbeit. Standardmaessig
-      siehst du die <strong>Highlights</strong> — Standardtools und eigene
-      Werkzeuge. Waehle <em>einen</em> Filter — <em>Alle</em>, einen Bereich,
-      eine Kategorie oder ein Bundesland; alternativ das nach Themen geordnete
+      siehst du <strong>alle</strong> Werkzeuge. Waehle <em>einen</em> Filter
+      — <em>Highlights</em> (Standardtools und eigene Werkzeuge), einen
+      Bereich, eine Kategorie oder ein Bundesland; alternativ das nach Themen
+      geordnete
       <a href={`${import.meta.env.BASE_URL}verzeichnis/`}>Verzeichnis</a>.
     </p>
   </section>
@@ -55,7 +56,7 @@ const highlightCount = all.filter((e) => istHighlightEintrag(e.data.bereich, e.d
     <Suche />
   </section>
 
-  <p>{highlightCount} Highlights von {all.length} Werkzeugen. Filtere nach Bereich, Kategorie{vorhandeneBundeslaender.length > 0 ? ' oder Bundesland' : ''} — oder durchsuche oben Namen, Beschreibung und Kategorien.</p>
+  <p>{all.length} Werkzeuge, davon {highlightCount} Highlights. Filtere nach Bereich, Kategorie{vorhandeneBundeslaender.length > 0 ? ' oder Bundesland' : ''} — oder durchsuche oben Namen, Beschreibung und Kategorien.</p>
 
   <FilterBar counts={counts} bereiche={vorhandeneBereiche} bundeslaender={vorhandeneBundeslaender} />
 

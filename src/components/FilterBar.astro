@@ -25,8 +25,8 @@ const aktiveBereiche = bereiche.filter((id) => BEREICHE[id]);
 <div class="filter-bar" data-filter-bar>
   <span class="filter-bar__label">Ansicht:</span>
   <div class="filter-bar__group">
-    <button class="filter-chip" type="button" data-facet="highlights" data-value="" aria-pressed="true">Highlights</button>
-    <button class="filter-chip" type="button" data-facet="all" data-value="" aria-pressed="false">Alle</button>
+    <button class="filter-chip" type="button" data-facet="highlights" data-value="" aria-pressed="false">Highlights</button>
+    <button class="filter-chip" type="button" data-facet="all" data-value="" aria-pressed="true">Alle</button>
   </div>
 
   {aktiveBereiche.length > 0 && (
@@ -67,8 +67,8 @@ const aktiveBereiche = bereiche.filter((id) => BEREICHE[id]);
   (function () {
     const bar = document.querySelector('[data-filter-bar]') as HTMLElement | null;
     if (!bar) return;
-    // Genau ein aktiver Filter (Facette + Wert). Default: Highlights.
-    const state = { facet: 'highlights', value: '' };
+    // Genau ein aktiver Filter (Facette + Wert). Default: Alle.
+    const state = { facet: 'all', value: '' };
 
     function applyFilters() {
       const cards = document.querySelectorAll('.werkzeug-card[data-bereich]');
@@ -115,7 +115,7 @@ const aktiveBereiche = bereiche.filter((id) => BEREICHE[id]);
       });
     });
 
-    // Default-Highlights-Ansicht sofort anwenden (ohne JS bleiben alle sichtbar).
+    // Default-Alle-Ansicht sofort anwenden (ohne JS bleiben alle sichtbar).
     applyFilters();
   })();
 </script>
