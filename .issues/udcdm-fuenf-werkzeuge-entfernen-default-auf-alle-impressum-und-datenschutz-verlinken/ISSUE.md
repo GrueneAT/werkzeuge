@@ -1,7 +1,7 @@
 ---
 id: udcdm
 title: Fuenf Werkzeuge entfernen, Default auf Alle, Impressum und Datenschutz verlinken
-status: open
+status: done
 priority: high
 labels:
 - enhancement
